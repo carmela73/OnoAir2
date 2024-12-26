@@ -1,0 +1,11 @@
+<div class="book-flight-container">
+    <h2>Book a flight</h2>
+    <div *ngIf="flight" class="flight-details">
+      <p><strong>Origin:</strong> {{ flight.origin }} Boarding: {{ flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Destination:</strong> {{ flight.destination }} Landing: {{ flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+    <div *ngIf="!flight">
+      <p>Flight not found.</p>
+    </div>
+  </div>
+  
