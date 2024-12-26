@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { FlightsTableComponent } from '../flights/pages/flights-table/flights-table.component';
 import { Flight } from '../flights/model/flight.model'; // Adjust the import path as necessary
 import { FlightService } from '../flights/service/flight.service'; // ודאי שהנתיב נכון
+import { LastMinuteFlightComponent } from '../flights/pages/last-minute-flight/last-minute-flight.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [RouterModule, CommonModule, FlightsTableComponent],
+  imports: [RouterModule, CommonModule, FlightsTableComponent, LastMinuteFlightComponent],
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'] 
 })
