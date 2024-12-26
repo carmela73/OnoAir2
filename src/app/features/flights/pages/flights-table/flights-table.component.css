@@ -1,0 +1,50 @@
+.flights-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column; /* סידור אנכי */
+    align-items: center; /* ממרכז את הכותרת והטבלה */
+    margin: 20px auto;
+    max-width: 80%;
+  }
+  
+  .mat-elevation-z8 {
+   /* background-color: #d1e7f4; /* כחול בהיר יותר */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* צל עדין */
+  }
+  
+  .mat-header-row {
+    background-color: #2874a6; /* כחול כהה יותר לכותרת */
+    color: white;
+  }
+  
+  .mat-header-cell {
+    font-weight: bold;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    border-bottom: 2px solid #5dade2; /* קו תחתון לכותרת */
+  }
+  
+  .mat-row:nth-child(even) {
+    background-color: #ebf5fb; /* רקע שורות זוגיות */
+  }
+  
+  .mat-row:nth-child(odd) {
+    background-color: #d6eaf8; /* רקע שורות אי-זוגיות */
+  }
+  
+  .mat-cell {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #d6dbdf; /* קו בין שורות */
+  }
+  .title {
+    text-align: center; /* מרכז את הטקסט */
+    font-size: 24px; /* גודל טקסט */
+    font-weight: bold; /* טקסט מודגש */
+    margin-bottom: 20px; /* רווח מתחת לכותרת */
+    color: #3f51b5; /* צבע הכותרת */
+    white-space: nowrap; /* מוודא שהכותרת לא נשברת לשורות */
+  }
