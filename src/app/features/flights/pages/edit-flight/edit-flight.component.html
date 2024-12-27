@@ -1,0 +1,15 @@
+<div class="edit-flight-container">
+    <h2>Edit Flight</h2>
+    <div *ngIf="flight; else noFlight">
+      <p><strong>Flight Number:</strong> {{ flight.flightNumber }}</p>
+      <p><strong>Origin:</strong> {{ flight.origin }}</p>
+      <p><strong>Destination:</strong> {{ flight.destination }}</p>
+      <p><strong>Boarding Date:</strong> {{ flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Arrival Date:</strong> {{ flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Number of Seats:</strong> {{ flight.numberOfSeats }}</p>
+    </div>
+    <ng-template #noFlight>
+      <p>Flight not found.</p>
+    </ng-template>
+  </div>
+  

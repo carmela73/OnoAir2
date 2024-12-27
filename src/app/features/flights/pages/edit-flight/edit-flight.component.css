@@ -1,4 +1,4 @@
-.book-flight-container {
+.edit-flight-container {
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
@@ -14,11 +14,9 @@
     line-height: 1.5;
     margin: 10px 0;
   }
-
+  
 h2 {
     color: #3f51b5; /* כחול של Angular Material */
     text-align: center; /* מרכז את הכותרת */
     margin-bottom: 20px; /* ריווח מתחת לכותרת */
   }
-
-  

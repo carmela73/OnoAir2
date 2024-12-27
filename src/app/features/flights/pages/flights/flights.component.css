@@ -7,11 +7,11 @@
     max-width: 80%;
   }
   
-  .mat-elevation-z8 {
+.mat-elevation-z8 {
     width: 100%;
   }
   
-  .title {
+.title {
     text-align: center; /* מרכז את הטקסט */
     font-size: 24px; /* גודל טקסט */
     font-weight: bold; /* טקסט מודגש */
