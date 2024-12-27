@@ -1,0 +1,48 @@
+.help-container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-align: left; /* Align content to the left for English */
+  }
+  
+  .help-title {
+    color: #3f51b5; /* Blue */
+    font-size: 20px; /* Adjusted size for consistency */
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .help-intro {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .help-list {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+  }
+  
+  .help-list li {
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  .help-list strong {
+    color: #1e88e5; /* Darker blue for emphasis */
+  }
+  
+  .help-list li br {
+    margin-top: 5px; /* Add spacing between question and answer */
+  }
+  
+  .material-symbols-outlined {
+    vertical-align: middle; /* Align the icon with the text */
+    font-size: 24px; /* Icon size */
+    color: #1e88e5; /* Blue color for the icon */
+  }
+  
