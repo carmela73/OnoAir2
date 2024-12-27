@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FlightsTableComponent } from '../flights/pages/flights-table/flights-table.component';
-import { Flight } from '../flights/model/flight.model'; // Adjust the import path as necessary
-import { FlightService } from '../flights/service/flight.service'; // ודאי שהנתיב נכון
+import { Flight } from '../flights/model/flight.model';
+import { FlightService } from '../flights/service/flight.service';
 import { LastMinuteFlightComponent } from '../flights/pages/last-minute-flight/last-minute-flight.component';
 
 @Component({
@@ -15,7 +15,7 @@ import { LastMinuteFlightComponent } from '../flights/pages/last-minute-flight/l
 })
 
 export class HomePageComponent implements OnInit {
-  lastMinuteFlights: Flight[] = []; // טיסות לשבוע הקרוב
+  lastMinuteFlights: Flight[] = []; 
 
   constructor(private flightService: FlightService) {}
 
@@ -24,7 +24,6 @@ export class HomePageComponent implements OnInit {
     const oneWeekFromToday = new Date();
     oneWeekFromToday.setDate(today.getDate() + 7);
 
-    // סינון טיסות לשבוע הקרוב
     this.lastMinuteFlights = this.flightService.list().filter((flight: Flight) =>
       flight.boardingDate >= today && flight.boardingDate <= oneWeekFromToday
     );    

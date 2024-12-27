@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Flight } from '../../model/flight.model';
 import { CommonModule } from '@angular/common';
-import { FlightService } from '../../service/flight.service';
 import { RouterModule } from '@angular/router';	
 import { MatButtonModule } from '@angular/material/button';
 
@@ -14,5 +13,5 @@ import { MatButtonModule } from '@angular/material/button';
 })
 
 export class LastMinuteFlightComponent {
-  @Input() flight!: Flight; // קבלת אובייקט של טיסה מהקומפוננטה ההורה
+  @Input() flight!: Flight;
 }

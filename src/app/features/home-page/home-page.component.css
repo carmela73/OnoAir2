@@ -19,10 +19,10 @@
   }
   
   .flights-grid {
-    display: flex; /* פריסה בשורה */
-    flex-wrap: wrap; /* גלישה לשורה הבאה אם נגמר מקום */
-    gap: 20px; /* רווחים בין הקומפוננטות */
-    justify-content: center; /* ממרכז את הקומפוננטות */
-    align-items: flex-start; /* מיישר את הקומפוננטות למעלה */
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+    align-items: flex-start;
   }
    

@@ -2,15 +2,15 @@
     max-width: 600px;
     margin: 30px auto;
     padding: 20px;
-    background-color: #f9f9f9; /* Light background */
+    background-color: #f9f9f9; 
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    text-align: left; /* Align content to the left for English */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    text-align: left; 
   }
   
   .help-title {
-    color: #3f51b5; /* Blue */
-    font-size: 20px; /* Adjusted size for consistency */
+    color: #3f51b5; 
+    font-size: 20px; 
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
@@ -23,7 +23,7 @@
   }
   
   .help-list {
-    list-style: none; /* Remove bullet points */
+    list-style: none; 
     padding: 0;
   }
   
@@ -33,16 +33,16 @@
   }
   
   .help-list strong {
-    color: #1e88e5; /* Darker blue for emphasis */
+    color: #1e88e5; 
   }
   
   .help-list li br {
-    margin-top: 5px; /* Add spacing between question and answer */
+    margin-top: 5px; 
   }
   
   .material-symbols-outlined {
-    vertical-align: middle; /* Align the icon with the text */
-    font-size: 24px; /* Icon size */
-    color: #1e88e5; /* Blue color for the icon */
+    vertical-align: middle; 
+    font-size: 24px; 
+    color: #1e88e5;
   }
   

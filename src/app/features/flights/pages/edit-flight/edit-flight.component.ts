@@ -3,14 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FlightService } from '../../service/flight.service';
 import { Flight } from '../../model/flight.model';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-edit-flight',
   standalone: true,
-  imports: [ CommonModule, RouterModule ],
+  imports: [ CommonModule ],
   templateUrl: './edit-flight.component.html',
-  styleUrl: './edit-flight.component.css'
+  styleUrls: ['./edit-flight.component.css']
 })
 
 export class EditFlightComponent implements OnInit {

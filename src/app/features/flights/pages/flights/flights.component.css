@@ -1,8 +1,8 @@
 .admin-flights-container {
     display: flex;
     justify-content: center;
-    flex-direction: column; /* סידור אנכי */
-    align-items: center; /* ממרכז את הכותרת והטבלה */
+    flex-direction: column; 
+    align-items: center; 
     margin: 20px auto;
     max-width: 80%;
   }
@@ -12,12 +12,12 @@
   }
   
 .title {
-    text-align: center; /* מרכז את הטקסט */
-    font-size: 24px; /* גודל טקסט */
-    font-weight: bold; /* טקסט מודגש */
-    margin-bottom: 20px; /* רווח מתחת לכותרת */
-    color: #3f51b5; /* צבע הכותרת */
-    white-space: nowrap; /* מוודא שהכותרת לא נשברת לשורות */
+    text-align: center; 
+    font-size: 24px; 
+    font-weight: bold; 
+    margin-bottom: 20px; 
+    color: #3f51b5; 
+    white-space: nowrap;
   }
   
   button {

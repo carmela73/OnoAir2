@@ -15,13 +15,9 @@ import { CommonModule } from '@angular/common';
 export class BookFlightComponent implements OnInit {
   flight?: Flight;
 
-  constructor(
-    private route: ActivatedRoute,
-    private flightService: FlightService
-  ) {}
+  constructor(private route: ActivatedRoute,private flightService: FlightService) {}
 
   ngOnInit(): void {
-    // קבלת מספר הטיסה מהנתיב
     const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
     if (flightNumber) {
       this.flight = this.flightService.get(flightNumber);
