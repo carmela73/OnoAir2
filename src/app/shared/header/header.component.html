@@ -1,36 +1,21 @@
-<div class="header-container">
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <span class="app-title" routerLink="/">OnoAir</span>
-  
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item [matMenuTriggerFor]="adminMenu">
-        Admin
-        <span class="spacer"></span>
-      </button>
-      <button mat-menu-item [matMenuTriggerFor]="userMenu">
-        User
-        <span class="spacer"></span>
-      </button>
-    </mat-menu>
-  
-    <mat-menu #adminMenu="matMenu">
-      <button mat-menu-item routerLink="/flights">
-        Manage Flights
-      </button>
-      <button mat-menu-item routerLink="/destinations">
-        Manage Destinations
-      </button>
-    </mat-menu>
-  
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item routerLink="/find-flight">
-        Search a Flight
-      </button>
-      <button mat-menu-item routerLink="/my-bookings">
-        My Bookings
-      </button>
-    </mat-menu>
-  </div>
-  
+<mat-toolbar color="primary" class="header-container">
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span class="app-title" routerLink="/">OnoAir</span>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item [matMenuTriggerFor]="adminMenu">Admin</button>
+    <button mat-menu-item [matMenuTriggerFor]="userMenu">User</button>
+  </mat-menu>
+
+  <mat-menu #adminMenu="matMenu">
+    <button mat-menu-item routerLink="/flights">Manage Flights</button>
+    <button mat-menu-item routerLink="/destinations">Manage Destinations</button>
+  </mat-menu>
+
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item routerLink="/find-flight">Search a Flight</button>
+    <button mat-menu-item routerLink="/my-bookings">My Bookings</button>
+  </mat-menu>
+</mat-toolbar>

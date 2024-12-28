@@ -1,11 +1,13 @@
 .header-container {
     display: flex;
+    height: 64px; /* גובה סטנדרטי */
+    justify-content: flex-start; 
     align-items: center;
-    padding: 10px;
+    padding: 0 16px;
     background-color: #1976d2;
     color: white;
-  }
-  
+}
+
 .app-title {
     font-size: 24px;
     font-weight: bold;
@@ -13,14 +15,10 @@
     cursor: pointer;
     text-decoration: none;
     color: white;
-    padding: 10px;
 }
-  
+
 mat-icon {
-    color: white;
+    color: white; 
+    font-size: 24px; 
 }
-  
-.spacer {
-    flex: 1;
-}
-  
+
