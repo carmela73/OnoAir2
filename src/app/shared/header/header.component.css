@@ -1,0 +1,26 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #1976d2;
+    color: white;
+  }
+  
+.app-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-left: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+}
+  
+mat-icon {
+    color: white;
+}
+  
+.spacer {
+    flex: 1;
+}
+  
