@@ -1,36 +1,28 @@
 .footer-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 64px; /* התאמה לגובה ה-Header */
-  padding: 0 16px; /* ריווח אחיד */
-  background-color: #1976d2;
-  color: white;
-  font-size: 14px;
-  margin-top: auto;
-  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1); /* שמירה על הצל */
+  justify-content: space-between; 
+  background-color: #0056b3; 
+  color: #ffffff; 
+  height: 60px; 
+  padding: 0 1rem; 
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-  
 .footer-icon {
-  color: white;
-  font-size: 24px; /* התאמה לגודל האייקון ב-Header */
+  color: #ffffff;
+  font-size: 24px;
   cursor: pointer;
 }
 
 .footer-icon:hover {
-  color: #bbdefb; /* אפקט מעבר */
-}
-  
-footer {
-  background-color: #1976d2;
-  color: white;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  color: #bbdefb;
 }
 
-  
-  
-  
+.footer-text {
+  font-size: 0.875rem;
+  font-weight: normal;
+  margin: 0; 
+  text-align: center;
+}
