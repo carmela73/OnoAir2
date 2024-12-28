@@ -28,4 +28,8 @@ export class HomePageComponent implements OnInit {
       flight.boardingDate >= today && flight.boardingDate <= oneWeekFromToday
     );    
   }
+
+  thereAreLastMinuteFlights(): boolean {
+    return this.lastMinuteFlights.length > 0;
+  }
 }
