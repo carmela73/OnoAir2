@@ -54,7 +54,6 @@ export class FlightService {
     return this.flights.filter(flight => new Date(flight.boardingDate).getTime() > now);
   }
 
-
   get(flightNumber: string): Flight | undefined {
     return this.flights.find(flight => flight.flightNumber === flightNumber);
   }
