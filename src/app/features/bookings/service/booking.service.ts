@@ -34,4 +34,5 @@ export class BookingService {
   get(bookingId: string): Booking | undefined {
     return this.bookings.find(booking => booking.bookingId === bookingId);
   }
+  
 }

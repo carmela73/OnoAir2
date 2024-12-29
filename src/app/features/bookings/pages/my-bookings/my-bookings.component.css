@@ -5,30 +5,34 @@
 h2 {
   margin: 16px 0;
   text-align: center;
-  color: #3f51b5; /* צבע כחול מותאם לפרויקט */
+  color: #3f51b5; 
 }
 
 .booking-item {
   display: flex;
   align-items: center;
-  margin: 16px auto; /* רווח בין המלבנים */
+  margin: 16px auto; 
   border: 1px solid #ccc;
-  padding: 10px; /* גודל מרווח פנימי קטן יותר */
+  padding: 10px; 
   border-radius: 8px;
   background-color: #f9f9f9;
-  max-width: 80%; /* הקטנה של המלבן מהצדדים */
+  max-width: 80%; 
   position: relative;
 }
 
 .image-container {
-  margin-right: 16px;
+  flex-shrink: 0; 
+  align-items: center; 
+  justify-content: center; 
 }
 
 .destination-image {
-  width: 80px; /* גודל תמונה קטן יותר */
-  height: 80px;
-  object-fit: cover;
-  border-radius: 8px;
+  width: 120px; 
+  height: 120px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
+  margin-right: 16px; 
 }
 
 .details-container {
@@ -36,17 +40,14 @@ h2 {
 }
 
 .view-button {
-  position: absolute;
-  bottom: 8px;
-  right: 8px; /* מיקום בצד ימין למטה */
-  background-color: #3f51b5;
-  color: white;
-  border: none;
-  padding: 6px 12px; /* גודל כפתור קטן יותר */
-  border-radius: 4px;
+  background-color: white;
+  color: #3f51b5;
+  border-radius: 24px; 
+  padding: 10px 16px; 
   cursor: pointer;
+  float: right;
+  transition: background-color 0.3s, color 0.3s; 
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
 }
 
-.view-button:hover {
-  background-color: #303f9f;
-}
+

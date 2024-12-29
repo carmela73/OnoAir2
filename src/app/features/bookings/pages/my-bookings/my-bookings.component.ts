@@ -4,15 +4,17 @@ import { FlightService } from '../../../flights/service/flight.service';
 import { Booking } from '../../model/booking.model';
 import { Flight } from '../../../flights/model/flight.model';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule, RouterLink,],
+  imports: [CommonModule,RouterModule, RouterLink, MatButtonModule],
   templateUrl: './my-bookings.component.html',
   styleUrls: ['./my-bookings.component.css']
 })
+
 export class MyBookingsComponent implements OnInit {
   upcomingBookings: { booking: Booking; flight: Flight }[] = [];
   previousBookings: { booking: Booking; flight: Flight }[] = [];
@@ -24,7 +26,7 @@ export class MyBookingsComponent implements OnInit {
 
     const allBookings = this.bookingService.list();
 
-    // Split bookings into upcoming and previous
+    // split bookings into upcoming and previous
     allBookings.forEach((booking) => {
       const flight = this.flightService.get(booking.flightNumber);
       if (flight) {
@@ -44,4 +46,5 @@ export class MyBookingsComponent implements OnInit {
   hasPreviousBookings(): boolean {
     return this.previousBookings.length > 0;
   }
+
 }
