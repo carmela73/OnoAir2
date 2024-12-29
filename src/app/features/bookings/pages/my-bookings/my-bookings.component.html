@@ -1,0 +1,42 @@
+<div class="my-bookings-container">
+  <!-- Upcoming Bookings Section -->
+  <h2>Upcoming Bookings</h2>
+  <div *ngIf="hasUpcomingBookings()">
+    <div *ngFor="let item of upcomingBookings" class="booking-item">
+      <div class="image-container">
+        <img [src]="item.flight.imageUrl" alt="Destination Image" class="destination-image">
+      </div>
+      <div class="details-container">
+        <p><strong>Origin:</strong> {{ item.flight.origin }} Boarding: {{ item.flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Destination:</strong> {{ item.flight.destination }} Landing: {{ item.flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>No. of passengers:</strong> {{ item.booking.numberOfPassengers }}</p>
+        <button class="view-button">View</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!hasUpcomingBookings()">
+    <p>No upcoming bookings available.</p>
+  </div>
+
+  <!-- Previous Bookings Section -->
+  <h2>Previous Bookings</h2>
+  <div *ngIf="hasPreviousBookings()">
+    <div *ngFor="let item of previousBookings" class="booking-item">
+      <div class="image-container">
+        <img [src]="item.flight.imageUrl" alt="Destination Image" class="destination-image">
+      </div>
+      <div class="details-container">
+        <p><strong>Origin:</strong> {{ item.flight.origin }} Boarding: {{ item.flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Destination:</strong> {{ item.flight.destination }} Landing: {{ item.flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>No. of passengers:</strong> {{ item.booking.numberOfPassengers }}</p>
+        <button 
+        class="view-button"
+        [routerLink]="['/view-booking', item.booking.bookingId]">
+        View
+      </button>      </div>
+    </div>
+  </div>
+  <div *ngIf="!hasPreviousBookings()">
+    <p>No previous bookings available.</p>
+  </div>
+</div>

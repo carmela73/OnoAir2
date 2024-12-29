@@ -1,0 +1,52 @@
+.my-bookings-container {
+  padding: 16px;
+}
+
+h2 {
+  margin: 16px 0;
+  text-align: center;
+  color: #3f51b5; /* צבע כחול מותאם לפרויקט */
+}
+
+.booking-item {
+  display: flex;
+  align-items: center;
+  margin: 16px auto; /* רווח בין המלבנים */
+  border: 1px solid #ccc;
+  padding: 10px; /* גודל מרווח פנימי קטן יותר */
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-width: 80%; /* הקטנה של המלבן מהצדדים */
+  position: relative;
+}
+
+.image-container {
+  margin-right: 16px;
+}
+
+.destination-image {
+  width: 80px; /* גודל תמונה קטן יותר */
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.details-container {
+  flex: 1;
+}
+
+.view-button {
+  position: absolute;
+  bottom: 8px;
+  right: 8px; /* מיקום בצד ימין למטה */
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  padding: 6px 12px; /* גודל כפתור קטן יותר */
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-button:hover {
+  background-color: #303f9f;
+}
