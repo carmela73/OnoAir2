@@ -1,0 +1,15 @@
+<div class="destination-container">
+    <h2 class="title">New Destination</h2>
+    <div *ngIf="destination">
+      <p><strong>Destination code:</strong> {{ destination.code }}</p>
+      <p><strong>Destination name:</strong> {{ destination.name }}</p>
+      <p><strong>Airport name:</strong> {{ destination.airportName }}</p>
+      <p><strong>Airport url: </strong> <a [href]="destination.website" target="_blank">{{ destination.website }}</a></p>
+      <p><strong>Image:</strong></p>
+      <img [src]="destination.imageUrl" alt="{{ destination.name }}" class="destination-image">
+    </div>
+    <div *ngIf="!destination">
+      <p>Destination not found.</p>
+    </div>
+  </div>
+  
