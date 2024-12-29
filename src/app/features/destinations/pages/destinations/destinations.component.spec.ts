@@ -19,5 +19,5 @@ describe('DestinationsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
+  });
 });

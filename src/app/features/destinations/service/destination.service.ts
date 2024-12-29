@@ -26,6 +26,6 @@ export class DestinationService {
   }
 
   get(code: string): Destination | undefined {
-    return this.destinations.find(destination => destination.code === code);
-  }
+    return this.destinations.find(destination => destination.code === code);
+  }
 }

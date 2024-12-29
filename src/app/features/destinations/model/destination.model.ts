@@ -5,5 +5,6 @@ export class Destination {
       public airportName: string,
       public website: string,
       public imageUrl: string
-    ) {}
-  }
+    ) {}
+  }
+  

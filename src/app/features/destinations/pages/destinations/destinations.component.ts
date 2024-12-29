@@ -24,5 +24,5 @@ export class DestinationsComponent implements OnInit {
 
   ngOnInit(): void {
     this.destinations = this.destinationService.list();
-  }
+  }
 }
