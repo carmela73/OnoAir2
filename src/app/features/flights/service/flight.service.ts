@@ -48,7 +48,6 @@ export class FlightService {
     return this.flights;
   }
 
-  // שירות: סינון טיסות עתידיות בלבד
   getFutureFlights(): Flight[] {
     const now = new Date().getTime();
     return this.flights.filter(flight => new Date(flight.boardingDate).getTime() > now);
