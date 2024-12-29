@@ -1,11 +1,21 @@
-<div class="book-flight-container">
-    <h2>Book a flight</h2>
-    <div *ngIf="flight" class="flight-details">
-      <p><strong>Origin:</strong> {{ flight.origin }} Boarding: {{ flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
-      <p><strong>Destination:</strong> {{ flight.destination }} Landing: {{ flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
-    </div>
-    <div *ngIf="!flight">
-      <p>Flight not found.</p>
+<div class="booking-details-container">
+  <h2 *ngIf="mode === 'book'">Book a flight</h2>
+  <h2 *ngIf="mode === 'view'">Booking Details</h2>
+
+  <div *ngIf="flight" class="flight-details">
+    <p><strong>Origin:</strong> {{ flight.origin }} <strong>Boarding:</strong> {{ flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+    <p><strong>Destination:</strong> {{ flight.destination }} <strong>Landing:</strong> {{ flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+
+    <div *ngIf="mode === 'view' && booking">
+      <p><strong>No. of passengers:</strong> {{ booking.numberOfPassengers }}</p>
+      <div *ngFor="let passenger of booking.passengers; let i = index">
+        <p><strong>Passenger {{ i + 1 }}</strong></p>
+        <p>Name: {{ passenger.name }}</p>
+        <p>Passport no.: {{ passenger.passportNumber }}</p>
+      </div>
     </div>
   </div>
-  
+  <div *ngIf="!flight">
+    <p>Flight details not found.</p>
+  </div>
+</div>

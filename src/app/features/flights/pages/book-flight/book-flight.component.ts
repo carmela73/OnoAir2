@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { FlightService } from '../../service/flight.service';
 import { Flight } from '../../model/flight.model';
 import { CommonModule } from '@angular/common';
+import { BookingService } from '../../../bookings/service/booking.service';
+import { Booking } from '../../../bookings/model/booking.model';
 
 @Component({
   selector: 'app-book-flight',
@@ -13,14 +15,38 @@ import { CommonModule } from '@angular/common';
 })
 
 export class BookFlightComponent implements OnInit {
-  flight?: Flight;
+  flight: Flight | null = null;
+  booking: Booking | null = null;
+  mode: 'book' | 'view' = 'book';
 
-  constructor(private route: ActivatedRoute,private flightService: FlightService) {}
-
+  constructor(
+    private route: ActivatedRoute,
+    private flightService: FlightService,
+    private bookingService: BookingService
+  ) {}
   ngOnInit(): void {
-    const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
-    if (flightNumber) {
-      this.flight = this.flightService.get(flightNumber);
+    this.mode = this.route.snapshot.data['mode'];
+  
+    if (this.mode === 'view') {
+      const bookingId = this.route.snapshot.paramMap.get('bookingId');
+  
+      if (bookingId) {
+        this.booking = this.bookingService.get(bookingId) || null;
+  
+        if (this.booking) {
+          this.flight = this.flightService.get(this.booking.flightNumber) || null;
+        }
+      }
+    }
+  
+    if (this.mode === 'book') {
+      const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
+      console.log('Flight Number:', flightNumber);
+  
+      if (flightNumber) {
+        this.flight = this.flightService.get(flightNumber) || null;
+        console.log('Flight:', this.flight);
+      }
     }
   }
 }
