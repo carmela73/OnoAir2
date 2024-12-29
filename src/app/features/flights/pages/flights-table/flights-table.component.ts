@@ -25,6 +25,7 @@ export class FlightsTableComponent implements OnInit {
   constructor(private flightService: FlightService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    this.route.data.subscribe(data => {this.tableTitle = data['tableTitle'] || 'Find a Flight';});
     const futureFlights = this.flightService.getFutureFlights();
     this.flights = new MatTableDataSource(futureFlights);
     this.flights.sort = this.sort;

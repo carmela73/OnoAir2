@@ -1,5 +1,4 @@
 <div class="home-container">
-
   <h2> Last minute flights </h2>
     <div *ngIf= "thereAreLastMinuteFlights()">
       <div class="flights-grid">
@@ -12,6 +11,6 @@
     <div *ngIf= "!thereAreLastMinuteFlights()">
       <p> There are no last minute flights available </p>
     </div>
-    <app-flights-table [tableTitle]="'Find a flight'"></app-flights-table>
+    <app-flights-table></app-flights-table>
   </div>
   
