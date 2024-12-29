@@ -24,6 +24,7 @@ export class BookFlightComponent implements OnInit {
     private flightService: FlightService,
     private bookingService: BookingService
   ) {}
+  
   ngOnInit(): void {
     this.mode = this.route.snapshot.data['mode'];
   
@@ -41,11 +42,9 @@ export class BookFlightComponent implements OnInit {
   
     if (this.mode === 'book') {
       const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
-      console.log('Flight Number:', flightNumber);
   
       if (flightNumber) {
         this.flight = this.flightService.get(flightNumber) || null;
-        console.log('Flight:', this.flight);
       }
     }
   }
