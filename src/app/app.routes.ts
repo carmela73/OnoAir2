@@ -14,7 +14,7 @@ export const routes: Routes = [
     { path: 'flights', component: FlightsComponent },
     { path: 'edit-flight/:flightNumber', component: EditFlightComponent },
     { path: 'help', component: HelpPageComponent },
-    { path: '**', redirectTo: '' } 
+    { path: '**', redirectTo: '' },
     { path: 'destinations', component: DestinationsComponent },
 ];
 
