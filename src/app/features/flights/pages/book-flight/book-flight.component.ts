@@ -15,8 +15,8 @@ import { Booking } from '../../../bookings/model/booking.model';
 })
 
 export class BookFlightComponent implements OnInit {
-  flight: Flight | null = null;
-  booking: Booking | null = null;
+  flight?: Flight;
+  booking?: Booking;
   mode: 'book' | 'view' = 'book';
 
   constructor(
@@ -32,10 +32,10 @@ export class BookFlightComponent implements OnInit {
       const bookingId = this.route.snapshot.paramMap.get('bookingId');
   
       if (bookingId) {
-        this.booking = this.bookingService.get(bookingId) || null;
+        this.booking = this.bookingService.get(bookingId);
   
         if (this.booking) {
-          this.flight = this.flightService.get(this.booking.flightNumber) || null;
+          this.flight = this.flightService.get(this.booking.flightNumber);
         }
       }
     }
@@ -44,7 +44,7 @@ export class BookFlightComponent implements OnInit {
       const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
   
       if (flightNumber) {
-        this.flight = this.flightService.get(flightNumber) || null;
+        this.flight = this.flightService.get(flightNumber);
       }
     }
   }
