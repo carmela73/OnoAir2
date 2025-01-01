@@ -17,7 +17,7 @@ import { Booking } from '../../../bookings/model/booking.model';
 export class BookFlightComponent implements OnInit {
   flight?: Flight;
   booking?: Booking;
-  mode: 'book' | 'view' = 'book';
+  isViewMode: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,26 +26,18 @@ export class BookFlightComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
-    this.mode = this.route.snapshot.data['mode'];
-  
-    if (this.mode === 'view') {
-      const bookingId = this.route.snapshot.paramMap.get('bookingId');
-  
-      if (bookingId) {
-        this.booking = this.bookingService.get(bookingId);
-  
-        if (this.booking) {
-          this.flight = this.flightService.get(this.booking.flightNumber);
-        }
+    const bookingId = this.route.snapshot.paramMap.get('bookingId');
+    const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
+
+    if (bookingId) {
+      this.isViewMode = true;
+      this.booking = this.bookingService.get(bookingId);
+      if (this.booking) {
+        this.flight = this.flightService.get(this.booking.flightNumber);
       }
-    }
-  
-    if (this.mode === 'book') {
-      const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
-  
-      if (flightNumber) {
-        this.flight = this.flightService.get(flightNumber);
-      }
+    } else if (flightNumber) {
+      this.isViewMode = false;
+      this.flight = this.flightService.get(flightNumber);
     }
   }
 }

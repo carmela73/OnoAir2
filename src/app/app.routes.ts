@@ -12,14 +12,14 @@ import { MyBookingsComponent } from './features/bookings/pages/my-bookings/my-bo
 export const routes: Routes = [
     { path: '', component: HomePageComponent }, 
     { path: 'find-flight', component: FlightsTableComponent, data: { tableTitle: 'Book a Flight' } },
-    { path: 'book/:flightNumber', component: BookFlightComponent, data: { mode: 'book' } }, 
+    { path: 'book/:flightNumber', component: BookFlightComponent }, 
     { path: 'flights', component: FlightsComponent },
     { path: 'edit-flight/:flightNumber', component: EditFlightComponent },
     { path: 'help', component: HelpPageComponent },
     { path: 'destinations', component: DestinationsComponent },
     { path: 'view-destination/:code', component: ViewDestinationComponent },
     { path: 'my-bookings', component: MyBookingsComponent },
-    { path: 'view-booking/:bookingId', component: BookFlightComponent, data: { mode: 'view' } },
+    { path: 'view-booking/:bookingId', component: BookFlightComponent},
     { path: '**', redirectTo: '' }
 ];
 
