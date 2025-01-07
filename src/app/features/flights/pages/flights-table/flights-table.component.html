@@ -42,6 +42,9 @@
           <button mat-icon-button color="primary" [routerLink]="['/edit-flight', flight.flightNumber]">
             <mat-icon>edit</mat-icon>
           </button>
+          <button mat-icon-button color="warn" (click)="cancelFlight(flight.flightNumber)">
+            <mat-icon>cancel</mat-icon>
+          </button>
         </ng-container>
       </td>
     </ng-container>

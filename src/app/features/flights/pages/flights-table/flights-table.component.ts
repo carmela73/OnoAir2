@@ -39,4 +39,10 @@ export class FlightsTableComponent implements OnInit {
     });
 
   }
+  cancelFlight(flightNumber: string): void {
+    if (confirm('Are you sure you want to cancel this flight?')) {
+      this.flightService.cancel(flightNumber);
+      this.flights.data = this.flightService.list(); // לעדכן את הנתונים בטבלה
+    }
+  }
 }

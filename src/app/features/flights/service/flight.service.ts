@@ -56,4 +56,8 @@ export class FlightService {
   get(flightNumber: string): Flight | undefined {
     return this.flights.find(flight => flight.flightNumber === flightNumber);
   }
+
+  cancel(flightNumber: string): void {
+    this.flights = this.flights.filter(flight => flight.flightNumber !== flightNumber);
+  }
 }
