@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FlightService } from '../../service/flight.service';
 import { Flight } from '../../model/flight.model';
@@ -24,7 +24,7 @@ export class FlightsTableComponent implements OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private flightService: FlightService, private route: ActivatedRoute) {}
+  constructor(private flightService: FlightService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.isAdmin = this.route.routeConfig?.path === 'flights'; // manager screen
@@ -42,7 +42,13 @@ export class FlightsTableComponent implements OnInit {
   cancelFlight(flightNumber: string): void {
     if (confirm('Are you sure you want to cancel this flight?')) {
       this.flightService.cancel(flightNumber);
-      this.flights.data = this.flightService.list(); // לעדכן את הנתונים בטבלה
+      this.flights.data = this.flightService.list(); 
+      alert('Flight canceled successfully.');
     }
   }
+
+  editFlight(flightNumber: string): void {
+    this.router.navigate(['/edit-flight', flightNumber]);
+  }  
+
 }
