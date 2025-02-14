@@ -20,7 +20,7 @@ export class FlightsTableComponent implements OnInit {
   isAdmin: boolean = false; 
   tableTitle: string = '';
   flights!: MatTableDataSource<Flight>;
-  displayedColumns: string[] = ['flightNumber', 'origin', 'destination', 'boardingDate', 'arrivalDate', 'numberOfSeats', 'actions'];
+  displayedColumns: string[] = [];
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -29,6 +29,10 @@ export class FlightsTableComponent implements OnInit {
   async ngOnInit() {
     this.isAdmin = this.route.routeConfig?.path === 'flights'; // manager screen
     this.tableTitle = this.isAdmin ? 'Manage Flights' : 'Book a Flight';
+
+    this.displayedColumns = this.isAdmin 
+    ? ['flightNumber', 'origin', 'destination', 'boardingDate', 'arrivalDate', 'numberOfSeats', 'status', 'actions'] 
+    : ['flightNumber', 'origin', 'destination', 'boardingDate', 'arrivalDate', 'numberOfSeats', 'actions'];
   
     const allFlights = await this.flightService.list(); 
     const futureFlights = await this.flightService.listFutureFlights(); 

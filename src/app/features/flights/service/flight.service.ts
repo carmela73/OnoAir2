@@ -26,15 +26,16 @@ export class FlightService {
       .filter(flight => new Date(flight.boardingDate) > today); 
   }
 
-  async get(flightNumber: string): Promise<Flight | undefined> {
+  async get(flightNumber: string): Promise<Flight | undefined> {  
     const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
     const q = query(flightsCollection, where('flightNumber', '==', flightNumber));
     const querySnapshot = await getDocs(q);
-  
+    
     if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].data(); 
+      const flight = querySnapshot.docs[0].data();
+      return flight;
     }
     return undefined;
   }
-
+  
 }

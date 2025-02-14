@@ -22,6 +22,6 @@ export class EditFlightComponent implements OnInit {
     if (flightNumber) {
       this.flight = await this.flightService.get(flightNumber);
     }
-  }
+  }  
   
 }
