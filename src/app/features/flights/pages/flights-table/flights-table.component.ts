@@ -26,27 +26,20 @@ export class FlightsTableComponent implements OnInit {
 
   constructor(private flightService: FlightService, private router: Router, private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.isAdmin = this.route.routeConfig?.path === 'flights'; // manager screen
     this.tableTitle = this.isAdmin ? 'Manage Flights' : 'Book a Flight';
-
-    const allFlights = this.flightService.list();
-    const futureFlights = this.flightService.getFutureFlights();
+  
+    const allFlights = await this.flightService.list(); 
+    const futureFlights = await this.flightService.listFutureFlights(); 
+    
     this.flights = new MatTableDataSource(this.isAdmin ? allFlights : futureFlights);
-
+  
     setTimeout(() => {
       this.flights.sort = this.sort;
     });
-
   }
-  cancelFlight(flightNumber: string): void {
-    if (confirm('Are you sure you want to cancel this flight?')) {
-      this.flightService.cancel(flightNumber);
-      this.flights.data = this.flightService.list(); 
-      alert('Flight canceled successfully.');
-    }
-  }
-
+  
   editFlight(flightNumber: string): void {
     this.router.navigate(['/edit-flight', flightNumber]);
   }  

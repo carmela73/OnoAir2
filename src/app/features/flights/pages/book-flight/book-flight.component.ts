@@ -25,7 +25,7 @@ export class BookFlightComponent implements OnInit {
     private bookingService: BookingService
   ) {}
   
-  ngOnInit(): void {
+  async ngOnInit() {
     const bookingId = this.route.snapshot.paramMap.get('bookingId');
     const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
 
@@ -33,11 +33,11 @@ export class BookFlightComponent implements OnInit {
       this.isViewMode = true;
       this.booking = this.bookingService.get(bookingId);
       if (this.booking) {
-        this.flight = this.flightService.get(this.booking.flightNumber);
+        this.flight = await this.flightService.get(this.booking.flightNumber);
       }
     } else if (flightNumber) {
       this.isViewMode = false;
-      this.flight = this.flightService.get(flightNumber);
+      this.flight = await this.flightService.get(flightNumber);
     }
   }
 }

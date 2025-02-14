@@ -21,22 +21,21 @@ export class MyBookingsComponent implements OnInit {
 
   constructor(private bookingService: BookingService, private flightService: FlightService) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     const now = new Date();
-
     const allBookings = this.bookingService.list();
 
     // split bookings into upcoming and previous
-    allBookings.forEach((booking) => {
-      const flight = this.flightService.get(booking.flightNumber);
+    for (const booking of allBookings) {
+      const flight = await this.flightService.get(booking.flightNumber); 
       if (flight) {
-        if (flight.boardingDate > now) {
+        if (new Date(flight.boardingDate) > now) {
           this.upcomingBookings.push({ booking, flight });
         } else {
           this.previousBookings.push({ booking, flight });
         }
       }
-    });
+    }
   }
 
   hasUpcomingBookings(): boolean {

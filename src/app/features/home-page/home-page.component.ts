@@ -19,14 +19,15 @@ export class HomePageComponent implements OnInit {
 
   constructor(private flightService: FlightService) {}
 
-  ngOnInit(): void {
-    const today = new Date();
-    const oneWeekFromToday = new Date();
-    oneWeekFromToday.setDate(today.getDate() + 7);
-
-    this.lastMinuteFlights = this.flightService.list().filter((flight: Flight) =>
-      flight.boardingDate >= today && flight.boardingDate <= oneWeekFromToday
-    );    
+  async ngOnInit() {
+      const today = new Date();
+      const oneWeekFromToday = new Date();
+      oneWeekFromToday.setDate(today.getDate() + 7);
+  
+      const flights = await this.flightService.list(); 
+      this.lastMinuteFlights = flights.filter((flight: Flight) =>
+        new Date(flight.boardingDate) >= today && new Date(flight.boardingDate) <= oneWeekFromToday
+      );
   }
 
   thereAreLastMinuteFlights(): boolean {

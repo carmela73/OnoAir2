@@ -17,10 +17,11 @@ export class EditFlightComponent implements OnInit {
 
   constructor(private flightService: FlightService, private route: ActivatedRoute) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     const flightNumber = this.route.snapshot.paramMap.get('flightNumber');
     if (flightNumber) {
-      this.flight = this.flightService.get(flightNumber);
+      this.flight = await this.flightService.get(flightNumber);
     }
   }
+  
 }
