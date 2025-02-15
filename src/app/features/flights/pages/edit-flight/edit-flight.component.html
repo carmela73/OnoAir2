@@ -1,15 +1,107 @@
 <div class="edit-flight-container">
-    <h2>Edit Flight</h2>
-    <div *ngIf="flight">
-      <p><strong>Flight Number:</strong> {{ flight.flightNumber }}</p>
-      <p><strong>Origin:</strong> {{ flight.origin }}</p>
-      <p><strong>Destination:</strong> {{ flight.destination }}</p>
-      <p><strong>Boarding Date:</strong> {{ flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
-      <p><strong>Arrival Date:</strong> {{ flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
-      <p><strong>Number of Seats:</strong> {{ flight.numberOfSeats }}</p>
-    </div>
-    <div *ngIf="!flight">
-      <p>Flight not found</p>
-    </div>
+  <h2 *ngIf="!flight.flightNumber">Add Flight</h2>
+  <h2 *ngIf="flight.flightNumber">Editing Flight {{ flight.flightNumber }}</h2>
+
+  <div *ngIf="showSuccessMessage" class="success-message">
+    <h3>Flight successfully saved!</h3>
   </div>
-  
+
+  <form #flightForm="ngForm" (ngSubmit)="saveFlight()" novalidate>
+
+    <mat-form-field>
+      <mat-label>Flight Number</mat-label>
+      <input matInput name="flightNumber" required [(ngModel)]="flight.flightNumber"
+             pattern="^[A-Z0-9]{6}$" #flightNumberCtrl="ngModel">
+
+      <mat-error *ngIf="flightNumberCtrl.invalid && flightNumberCtrl.touched">
+        <span *ngIf="flightNumberCtrl.errors?.['required']">Flight number is required</span>
+        <span *ngIf="flightNumberCtrl.errors?.['pattern']">Must be 6 uppercase letters and numbers</span>
+      </mat-error>
+
+      <mat-error *ngIf="existingFlightNumbers.includes(flight.flightNumber) && flight.flightNumber !== flightId">
+        Flight number already exists!
+      </mat-error>
+    </mat-form-field>
+
+    <div>
+    <mat-form-field>
+      <mat-label>Origin</mat-label>
+      <mat-select name="origin" required [(ngModel)]="flight.origin" #originCtrl="ngModel">
+        <mat-option *ngFor="let destination of destinations" [value]="destination.name">
+          {{ destination.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="originCtrl.invalid && originCtrl.touched">Origin is required</mat-error>
+    </mat-form-field>
+  </div>
+
+    <mat-form-field>
+      <mat-label>Destination</mat-label>
+      <mat-select name="destination" required [(ngModel)]="flight.destination" #destinationCtrl="ngModel">
+        <mat-option *ngFor="let destination of destinations" [value]="destination.name">
+          {{ destination.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="destinationCtrl.invalid && destinationCtrl.touched">Destination is required</mat-error>
+      <mat-error *ngIf="flight.origin && flight.destination && flight.origin === flight.destination">
+        Origin and destination must be different
+      </mat-error>
+    </mat-form-field>
+
+    <div class="row-container">
+    <mat-form-field>
+      <mat-label>Boarding Date</mat-label>
+      <input matInput [matDatepicker]="boardingDatepicker" name="boardingDate" required [(ngModel)]="boardingDate">
+      <mat-datepicker-toggle matIconSuffix [for]="boardingDatepicker"></mat-datepicker-toggle>
+      <mat-datepicker #boardingDatepicker></mat-datepicker>
+      <mat-error *ngIf="boardingDate < today">Boarding date must be in the future</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Boarding Time</mat-label>
+      <input matInput [matTimepicker]="boardingTimePicker" required name="boardingTime" [(ngModel)]="boardingTime" #boardingTimeCtrl="ngModel">
+      <mat-timepicker-toggle matIconSuffix [for]="boardingTimePicker"></mat-timepicker-toggle>
+      <mat-timepicker #boardingTimePicker></mat-timepicker>
+      <mat-error *ngIf="!boardingTimeCtrl.value || boardingTimeCtrl.invalid">Boarding time is required</mat-error>
+    </mat-form-field>
+    </div>
+
+    <div class="row-container">
+    <mat-form-field>
+      <mat-label>Arrival Date</mat-label>
+      <input matInput [matDatepicker]="arrivalDatepicker" name="arrivalDate" required [(ngModel)]="arrivalDate">
+      <mat-datepicker-toggle matIconSuffix [for]="arrivalDatepicker"></mat-datepicker-toggle>
+      <mat-datepicker #arrivalDatepicker></mat-datepicker>
+      <mat-error *ngIf="arrivalDate <= boardingDate">Arrival date must be after boarding date</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Arrival Time</mat-label>
+      <input matInput [matTimepicker]="arrivalTimePicker" required name="arrivalTime" [(ngModel)]="arrivalTime" #arrivalTimeCtrl="ngModel">
+      <mat-timepicker-toggle matIconSuffix [for]="arrivalTimePicker"></mat-timepicker-toggle>
+      <mat-timepicker #arrivalTimePicker></mat-timepicker>
+      <mat-error *ngIf="!arrivalTimeCtrl.value || arrivalTimeCtrl.invalid">Arrival time is required</mat-error>
+    </mat-form-field>
+    </div>
+
+    <div>
+    <mat-form-field>
+      <mat-label>Number of Seats</mat-label>
+      <input matInput type="number" name="numberOfSeats" required [(ngModel)]="flight.numberOfSeats" min="1">
+      <mat-error *ngIf="flight.numberOfSeats < 1">Seats must be at least 1</mat-error>
+    </mat-form-field>
+  </div>
+
+    <mat-form-field>
+      <mat-label>Flight Status</mat-label>
+      <mat-select name="status" required [(ngModel)]="flight.status">
+        <mat-option *ngFor="let status of flightStatuses" [value]="status">{{ status }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button type="submit" color="primary" [disabled]="flightForm.invalid || !boardingTimeCtrl.value || !arrivalTimeCtrl.value">
+      Save Flight
+    </button>
+
+  </form>
+</div>

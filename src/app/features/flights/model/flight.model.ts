@@ -12,7 +12,6 @@ export class Flight {
       public boardingDate: Date,
       public arrivalDate: Date,
       public numberOfSeats: number,
-      public imageUrl: string,
       public status: FlightStatus = FlightStatus.Active // default value
     ) {}
   }

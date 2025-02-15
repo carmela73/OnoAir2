@@ -1,4 +1,4 @@
-import { FirestoreDataConverter, QueryDocumentSnapshot, SnapshotOptions } from '@angular/fire/firestore';
+import { FirestoreDataConverter, QueryDocumentSnapshot, SnapshotOptions, Timestamp } from '@angular/fire/firestore';
 import { Flight, FlightStatus } from './model/flight.model';
 
 export const flightConverter: FirestoreDataConverter<Flight> = {
@@ -7,10 +7,9 @@ export const flightConverter: FirestoreDataConverter<Flight> = {
       flightNumber: flight.flightNumber, 
       origin: flight.origin,
       destination: flight.destination,
-      boardingDate: flight.boardingDate.toISOString(),
-      arrivalDate: flight.arrivalDate.toISOString(),
+      boardingDate: flight.boardingDate instanceof Date ? Timestamp.fromDate(flight.boardingDate) : flight.boardingDate,
+      arrivalDate: flight.arrivalDate instanceof Date ? Timestamp.fromDate(flight.arrivalDate) : flight.arrivalDate,
       numberOfSeats: flight.numberOfSeats, 
-      imageUrl: flight.imageUrl,
       status: flight.status
     };
   },
@@ -22,10 +21,9 @@ export const flightConverter: FirestoreDataConverter<Flight> = {
       data['flightNumber'],
       data['origin'],
       data['destination'],
-      data['boardingDate'].toDate() as Date,
-      data['arrivalDate'].toDate() as Date, 
+      data['boardingDate'] instanceof Timestamp ? data['boardingDate'].toDate() : new Date(data['boardingDate']),
+      data['arrivalDate'] instanceof Timestamp ? data['arrivalDate'].toDate() : new Date(data['arrivalDate']),
       data['numberOfSeats'],
-      data['imageUrl'],
       data['status'] as FlightStatus
     );
   }

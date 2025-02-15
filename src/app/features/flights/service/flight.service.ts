@@ -37,5 +37,38 @@ export class FlightService {
     }
     return undefined;
   }
+
+  async updateFlight(flight: Flight): Promise<void> {
+    if (!flight.id) {
+      return;
+    }
+    const flightRef = doc(this.firestore, 'flights', flight.id).withConverter(flightConverter);
+
+    const boardingDate = typeof flight.boardingDate === 'string' ? new Date(flight.boardingDate) : flight.boardingDate;
+    const arrivalDate = typeof flight.arrivalDate === 'string' ? new Date(flight.arrivalDate) : flight.arrivalDate;  
+  
+    await updateDoc(flightRef, { 
+      flightNumber: flight.flightNumber,
+      origin: flight.origin,
+      destination: flight.destination,
+      boardingDate: flight.boardingDate.toISOString(),
+      arrivalDate: flight.arrivalDate.toISOString(),
+      numberOfSeats: flight.numberOfSeats,
+      status: flight.status
+    });
+  }
+  
+  async addFlight(flight: Flight): Promise<void> {
+    const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
+  
+    // בדיקה שאין כבר טיסה עם מספר טיסה זהה
+    const existingFlight = await this.get(flight.flightNumber);
+    if (existingFlight) {
+      throw new Error('A flight with this flight number already exists!');
+    }
+  
+    // הוספת טיסה חדשה
+    await addDoc(flightsCollection, flight);
+  }
   
 }

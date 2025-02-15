@@ -28,4 +28,10 @@ export class DestinationService {
   get(code: string): Destination | undefined {
     return this.destinations.find(destination => destination.code === code);
   }
+
+  getByName(destinationName: string): Destination | undefined {
+    const destinations = this.list();
+    return destinations.find(dest => dest.name === destinationName);
+  }
+  
 }
