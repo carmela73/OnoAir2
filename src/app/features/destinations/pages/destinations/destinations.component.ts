@@ -29,21 +29,44 @@ export class DestinationsComponent implements OnInit {
     this.destinations = await this.destinationService.list();
   }
 
-  openCancelDialog(destinationCode: string) {
+  async openCancelDialog(destinationCode: string) {
+    const hasFlights = await this.destinationService.hasActiveFlights(destinationCode);
+  
+    if (hasFlights) {
+      this.dialog.open(CancelDestinationDialogComponent, {
+        data: { 
+          destinationCode, 
+          errorMessage: `Cannot cancel destination ${destinationCode} because there are active flights.`
+        }
+      });
+      return;
+    }
+  
     const dialogRef = this.dialog.open(CancelDestinationDialogComponent, {
-      data: { destinationCode }
+      data: { destinationCode, errorMessage: null }
     });
-
+  
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
         await this.cancelDestination(destinationCode);
       }
     });
+  }  
+  
+  async cancelDestination(destinationCode: string) {
+    const success = await this.destinationService.cancelDestination(destinationCode);
+    if (success) {
+      this.destinations = await this.destinationService.list(); // רענון הרשימה לאחר ביטול
+    }
   }
 
-  async cancelDestination(destinationCode: string) {
-    await this.destinationService.cancelDestination(destinationCode);
-    this.destinations = await this.destinationService.list();
+  async confirmCancelDestination(destinationCode: string) {
+    const error = await this.destinationService.cancelDestination(destinationCode);
+    if (error) {
+      this.dialog.open(CancelDestinationDialogComponent, { data: { errorMessage: error } });
+    } else {
+      this.destinations = await this.destinationService.list(); // רענון הרשימה
+    }
   }
-  
+
 }

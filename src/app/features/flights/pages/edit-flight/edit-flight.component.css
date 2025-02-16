@@ -45,9 +45,9 @@ button {
 
 .row-container {
   display: flex;
-  gap: 16px; /* ריווח בין השדות */
+  gap: 16px; 
   align-items: center;
-  flex-wrap: wrap; /* במקרה שהמסך קטן */
+  flex-wrap: wrap; 
 }
 
 .destination-image-container {

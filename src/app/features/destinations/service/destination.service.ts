@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Destination, DestinationStatus  } from '../model/destination.model';
 import { Firestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { destinationConverter } from '../destination-converter';
+import { FlightStatus, Flight } from '../../flights/model/flight.model';
+import { flightConverter } from '../../flights/flight-converter';
 
 @Injectable({
   providedIn: 'root'
@@ -39,13 +41,14 @@ export class DestinationService {
 
   async addDestination(destination: Destination): Promise<void> {
     const destinationsCollection = collection(this.firestore, 'destinations').withConverter(destinationConverter);
-    
+  
     const existingDestination = await this.getByCode(destination.code);
     if (existingDestination) {
       throw new Error('A destination with this code already exists!');
     }
+  
     await addDoc(destinationsCollection, destination);
-  }
+  }  
 
   async updateDestination(destination: Destination): Promise<void> {
     if (!destination.id) {
@@ -53,7 +56,6 @@ export class DestinationService {
     }
     const destinationRef = doc(this.firestore, 'destinations', destination.id).withConverter(destinationConverter);
     await updateDoc(destinationRef, { 
-      code: destination.code,
       name: destination.name,
       airportName: destination.airportName,
       website: destination.website,
@@ -61,24 +63,37 @@ export class DestinationService {
       email: destination.email,
       status: destination.status
     });
-  }
+  }  
 
   async deleteDestination(id: string): Promise<void> {
     const destinationRef = doc(this.firestore, 'destinations', id);
     await deleteDoc(destinationRef);
   }
 
-  async cancelDestination(code: string): Promise<void> {
-    const destinationsCollection = collection(this.firestore, 'destinations').withConverter(destinationConverter);
-    const q = query(destinationsCollection, where('code', '==', code));
-    const querySnapshot = await getDocs(q);
+  async cancelDestination(destinationCode: string): Promise<boolean> {
+    const destination = await this.getByCode(destinationCode);
+    if (!destination) return false;
   
-    if (!querySnapshot.empty) {
-      const destinationDoc = querySnapshot.docs[0];
-      const destinationRef = doc(this.firestore, 'destinations', destinationDoc.id).withConverter(destinationConverter);
-      
-      await updateDoc(destinationRef, { status: DestinationStatus.Cancelled });
+    const hasFlights = await this.hasActiveFlights(destinationCode);
+    if (hasFlights) {
+      return false;
     }
-  }  
   
+    destination.status = DestinationStatus.Cancelled;
+    await this.updateDestination(destination);
+    return true;
+  }
+
+  async hasActiveFlights(destinationCode: string): Promise<boolean> {
+    const flightsCollection = collection(this.firestore, 'flights');
+    const q = query(
+        flightsCollection,
+        where('destination', '==', destinationCode),
+        where('status', '==', 'Active') 
+    );
+
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty; 
+  }
+
 }
