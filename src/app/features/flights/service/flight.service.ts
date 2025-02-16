@@ -1,5 +1,5 @@
-import { Injectable,  } from '@angular/core';
-import { Flight } from '../model/flight.model';
+import { Injectable } from '@angular/core';
+import { Flight, FlightStatus } from '../model/flight.model';
 import { Firestore, collection, collectionData, addDoc, doc, getDocs, getDoc, updateDoc, deleteDoc, query, where} from '@angular/fire/firestore';
 import { flightConverter } from '../flight-converter';
 
@@ -23,7 +23,7 @@ export class FlightService {
     
     return querySnapshot.docs
       .map(doc => doc.data())
-      .filter(flight => new Date(flight.boardingDate) > today); 
+      .filter(flight => new Date(flight.boardingDate) > today && flight.status === 'Active'); 
   }
 
   async get(flightNumber: string): Promise<Flight | undefined> {  
@@ -61,14 +61,25 @@ export class FlightService {
   async addFlight(flight: Flight): Promise<void> {
     const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
   
-    // בדיקה שאין כבר טיסה עם מספר טיסה זהה
     const existingFlight = await this.get(flight.flightNumber);
     if (existingFlight) {
       throw new Error('A flight with this flight number already exists!');
     }
-  
-    // הוספת טיסה חדשה
-    await addDoc(flightsCollection, flight);
+      await addDoc(flightsCollection, flight);
+  }
+
+  async cancelFlight(flightNumber: string): Promise<void> {
+    const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
+    const q = query(flightsCollection, where('flightNumber', '==', flightNumber));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const flightDoc = querySnapshot.docs[0];
+      const flightRef = doc(this.firestore, 'flights', flightDoc.id).withConverter(flightConverter);
+      
+      await updateDoc(flightRef, { status: FlightStatus.Cancelled });
+    }
   }
   
+
 }

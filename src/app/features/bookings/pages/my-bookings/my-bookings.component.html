@@ -3,7 +3,7 @@
   <div *ngIf="hasUpcomingBookings()">
     <div *ngFor="let item of upcomingBookings" class="booking-item">
       <div class="image-container">
-        <img [src]="item.flight.imageUrl" alt="Destination Image" class="destination-image">
+        <img [src]="getDestinationImage(item.flight.destination)" alt="Destination Image" class="destination-image">
       </div>
       <div class="details-container">
         <p><strong>Origin:</strong> {{ item.flight.origin }} Boarding: {{ item.flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
@@ -21,7 +21,7 @@
   <div *ngIf="hasPreviousBookings()">
     <div *ngFor="let item of previousBookings" class="booking-item">
       <div class="image-container">
-        <img [src]="item.flight.imageUrl" alt="Destination Image" class="destination-image">
+        <img [src]="getDestinationImage(item.flight.destination)" alt="Destination Image" class="destination-image">
       </div>
       <div class="details-container">
         <p><strong>Origin:</strong> {{ item.flight.origin }} Boarding: {{ item.flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>

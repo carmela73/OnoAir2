@@ -6,6 +6,7 @@ import { Flight } from '../../../flights/model/flight.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { DestinationService } from '../../../destinations/service/destination.service';
 
 @Component({
   selector: 'app-my-bookings',
@@ -18,8 +19,9 @@ import { MatButtonModule } from '@angular/material/button';
 export class MyBookingsComponent implements OnInit {
   upcomingBookings: { booking: Booking; flight: Flight }[] = [];
   previousBookings: { booking: Booking; flight: Flight }[] = [];
+  destinationImages: { [destination: string]: string } = {}; 
 
-  constructor(private bookingService: BookingService, private flightService: FlightService) {}
+  constructor(private bookingService: BookingService, private flightService: FlightService, private destinationService: DestinationService ) {}
 
   async ngOnInit() {
     const now = new Date();
@@ -34,8 +36,18 @@ export class MyBookingsComponent implements OnInit {
         } else {
           this.previousBookings.push({ booking, flight });
         }
+
+        // destination image
+        if (!this.destinationImages[flight.destination]) {
+          const destination = this.destinationService.getByName(flight.destination);
+          this.destinationImages[flight.destination] = destination ? destination.imageUrl : 'assets/default-image.jpg';
+        }
       }
     }
+  }
+
+  getDestinationImage(destination: string): string {
+    return this.destinationImages[destination] || 'assets/default-image.jpg';
   }
 
   hasUpcomingBookings(): boolean {

@@ -26,7 +26,7 @@ export class HomePageComponent implements OnInit {
   
       const flights = await this.flightService.list(); 
       this.lastMinuteFlights = flights.filter((flight: Flight) =>
-        new Date(flight.boardingDate) >= today && new Date(flight.boardingDate) <= oneWeekFromToday
+        new Date(flight.boardingDate) >= today && new Date(flight.boardingDate) <= oneWeekFromToday && flight.status === 'Active'
       );
   }
 
