@@ -51,12 +51,13 @@ export class DestinationsComponent implements OnInit {
         await this.cancelDestination(destinationCode);
       }
     });
-  }  
+  }
+  
   
   async cancelDestination(destinationCode: string) {
     const success = await this.destinationService.cancelDestination(destinationCode);
     if (success) {
-      this.destinations = await this.destinationService.list(); // רענון הרשימה לאחר ביטול
+      this.destinations = await this.destinationService.list();
     }
   }
 
@@ -65,7 +66,7 @@ export class DestinationsComponent implements OnInit {
     if (error) {
       this.dialog.open(CancelDestinationDialogComponent, { data: { errorMessage: error } });
     } else {
-      this.destinations = await this.destinationService.list(); // רענון הרשימה
+      this.destinations = await this.destinationService.list(); 
     }
   }
 

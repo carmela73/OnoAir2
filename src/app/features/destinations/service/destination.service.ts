@@ -83,17 +83,22 @@ export class DestinationService {
     await this.updateDestination(destination);
     return true;
   }
+  
 
   async hasActiveFlights(destinationCode: string): Promise<boolean> {
-    const flightsCollection = collection(this.firestore, 'flights');
+    const destination = await this.getByCode(destinationCode);
+    if (!destination) return false;
+  
+    const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
     const q = query(
-        flightsCollection,
-        where('destination', '==', destinationCode),
-        where('status', '==', 'Active') 
+      flightsCollection, 
+      where('destination', '==', destination.name), 
+      where('status', '==', FlightStatus.Active)
     );
-
+    
     const querySnapshot = await getDocs(q);
     return !querySnapshot.empty; 
   }
+  
 
 }
