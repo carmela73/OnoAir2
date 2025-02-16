@@ -1,37 +1,84 @@
 import { Injectable } from '@angular/core';
-import { Destination } from '../model/destination.model';
+import { Destination, DestinationStatus  } from '../model/destination.model';
+import { Firestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { destinationConverter } from '../destination-converter';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DestinationService {
-  private destinations: Destination[] = [
-    new Destination('JFK', 'New York', 'John F. Kennedy International Airport', 'https://www.jfkairport.com/', 'https://www.lametayel.co.il/limages/744f38dce7d6704411124277fb7beba1.jpg?size=830x0&type=r'),
-    new Destination('KRK', 'Krakow', 'John Paul II Airport', 'https://www.krakowairport.pl/pl', 'https://www.elal.com/magazine/wp-content/uploads/2023/09/krakow-rynek-glowwny-806x463-shutterstock_1341413513.jpg'),
-    new Destination('FRA', 'Frankfurt', 'Frankfurt Airport', 'https://www.frankfurt-airport.com/en.html', 'https://www.elal.com/magazine/wp-content/uploads/2017/01/shutterstock_145475239.jpg'),
-    new Destination('TLV', 'Tel Aviv', 'Ben Gurion Airport', 'https://www.iaa.gov.il/en/', 'https://www.zmantelaviv.com/wp-content/uploads/2023/09/2.jpg'),
-    new Destination('VIE', 'Vienna', 'Vienna Airport', 'https://www.viennaairport.com/en/passengers', 'https://www.elal.com/magazine/wp-content/uploads/2017/05/shutterstock_238923085-1.jpg'),
-    new Destination('FCO', 'Rome', 'Leonardo da Vinci Rome Fiumicino Airport', 'https://www.adr.it/web/aeroporti-di-roma-en', 'https://www.elal.com/magazine/wp-content/uploads/2017/01/shutterstock_147643964.jpg'),
-    new Destination('BCN', 'Barcelona', 'Josep Tarradellas Barcelona–El Prat Airport', 'https://www.aena.es/en/josep-tarradellas-barcelona-el-prat.html', 'https://www.elal.com/magazine/wp-content/uploads/2017/01/shutterstock_229604983.jpg'),
-    new Destination('ATH', 'Athens', 'Athens International Airport Eleftherios Venizelos', 'https://www.aia.gr/en', 'https://www.elal.com/magazine/wp-content/uploads/2018/07/shutterstock_776615074.jpg'),
-    new Destination('ZRH', 'Zurich', 'Zurich Airport', 'https://www.flughafen-zuerich.ch/en/passengers', 'https://www.easygo.co.il/clients/easygo/gallery/Zurich/zuirch-1-756.jpg'),
-    new Destination('LHR', 'London', 'Heathrow Airport', 'https://www.heathrow.com/', 'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRj8g2WGx2WKl5DjBWBUSrjKrxZ9s4_PGHPlZJi7Cth748HVkEG6BvXcPFQ7uyLUJfGmlKic1YO_LCZ7jepcZH2C5bUFSt2cpHY0uEIjA'),
-    new Destination('HND', 'Tokyo', 'Haneda Airport', 'https://tokyo-haneda.com/en/', 'https://blog.easygo.co.il/wp-content/uploads/2019/09/tokyo2.jpg')
-  ];
+  constructor(private firestore: Firestore) {}
 
-  constructor() {}
-
-  list(): Destination[] {
-    return this.destinations;
+  async list(): Promise<Destination[]> {
+    const destinationsCollection = collection(this.firestore, 'destinations').withConverter(destinationConverter);
+    const querySnapshot = await getDocs(destinationsCollection);
+    return querySnapshot.docs.map(doc => doc.data());
   }
 
-  get(code: string): Destination | undefined {
-    return this.destinations.find(destination => destination.code === code);
+  async getByCode(code: string): Promise<Destination | undefined> {
+    const destinationsCollection = collection(this.firestore, 'destinations').withConverter(destinationConverter);
+    const q = query(destinationsCollection, where('code', '==', code));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs[0].data();
+    }
+    return undefined;
   }
 
-  getByName(destinationName: string): Destination | undefined {
-    const destinations = this.list();
-    return destinations.find(dest => dest.name === destinationName);
+  async getByName(name: string): Promise<Destination | undefined> {
+    const destinationsCollection = collection(this.firestore, 'destinations').withConverter(destinationConverter);
+    const q = query(destinationsCollection, where('name', '==', name));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      return querySnapshot.docs[0].data();
+    }
+    return undefined;
   }
+
+  async addDestination(destination: Destination): Promise<void> {
+    const destinationsCollection = collection(this.firestore, 'destinations').withConverter(destinationConverter);
+    
+    const existingDestination = await this.getByCode(destination.code);
+    if (existingDestination) {
+      throw new Error('A destination with this code already exists!');
+    }
+    await addDoc(destinationsCollection, destination);
+  }
+
+  async updateDestination(destination: Destination): Promise<void> {
+    if (!destination.id) {
+      return;
+    }
+    const destinationRef = doc(this.firestore, 'destinations', destination.id).withConverter(destinationConverter);
+    await updateDoc(destinationRef, { 
+      code: destination.code,
+      name: destination.name,
+      airportName: destination.airportName,
+      website: destination.website,
+      imageUrl: destination.imageUrl,
+      email: destination.email,
+      status: destination.status
+    });
+  }
+
+  async deleteDestination(id: string): Promise<void> {
+    const destinationRef = doc(this.firestore, 'destinations', id);
+    await deleteDoc(destinationRef);
+  }
+
+  async cancelDestination(code: string): Promise<void> {
+    const destinationsCollection = collection(this.firestore, 'destinations').withConverter(destinationConverter);
+    const q = query(destinationsCollection, where('code', '==', code));
+    const querySnapshot = await getDocs(q);
+  
+    if (!querySnapshot.empty) {
+      const destinationDoc = querySnapshot.docs[0];
+      const destinationRef = doc(this.firestore, 'destinations', destinationDoc.id).withConverter(destinationConverter);
+      
+      await updateDoc(destinationRef, { status: DestinationStatus.Cancelled });
+    }
+  }  
   
 }

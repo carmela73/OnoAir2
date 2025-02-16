@@ -24,10 +24,29 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let destination">
+          <a href="mailto:{{ destination.email }}">{{ destination.email }}</a>
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="image">
         <th mat-header-cell *matHeaderCellDef> Image </th>
         <td mat-cell *matCellDef="let destination">
           <img [src]="destination.imageUrl" alt="{{ destination.name }}" class="destination-image" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let destination">
+          <span [ngClass]="{
+            'status-active': destination.status === 'Active',
+            'status-cancelled': destination.status === 'Cancelled'
+          }">
+          {{ destination.status }}
+          </span>
         </td>
       </ng-container>
       
@@ -36,6 +55,9 @@
         <td mat-cell *matCellDef="let destination">
           <button mat-icon-button color="primary" [routerLink]="['/view-destination', destination.code]">
             <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="openCancelDialog(destination.code)">
+            <mat-icon>cancel</mat-icon>
           </button>
         </td>
       </ng-container>

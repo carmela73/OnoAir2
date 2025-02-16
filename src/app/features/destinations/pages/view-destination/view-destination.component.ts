@@ -13,14 +13,17 @@ import { CommonModule } from '@angular/common';
 })
 
 export class ViewDestinationComponent implements OnInit {
-  destination: Destination | null = null;
+  destination? : Destination;
 
   constructor(private route: ActivatedRoute,private destinationService: DestinationService) {}
 
-  ngOnInit(): void {
-    const code = this.route.snapshot.paramMap.get('code');
+  async ngOnInit() {
+    this.route.paramMap.subscribe(async params => {
+      const code = params.get('code')
     if (code) {
-      this.destination = this.destinationService.get(code) ?? null;
+      this.destination = await this.destinationService.getByCode(code);
     }
+   });
   }
-}
+
+} 

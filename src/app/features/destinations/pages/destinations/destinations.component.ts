@@ -6,11 +6,14 @@ import { RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table'; 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CancelDestinationDialogComponent } from '../cancel-destination-dialog/cancel-destination-dialog.component';
 
 @Component({
   selector: 'app-destinations',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatTableModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule],
   templateUrl: './destinations.component.html',
   styleUrls: ['./destinations.component.css']
 })
@@ -18,11 +21,29 @@ import { MatIconModule } from '@angular/material/icon';
 export class DestinationsComponent implements OnInit {
   destinations: Destination[] = [];
 
-  displayedColumns: string[] = ['code', 'name', 'airportName', 'website','image', 'actions'];
+  displayedColumns: string[] = ['code', 'name', 'airportName', 'website','email', 'image','status', 'actions'];
 
-  constructor(private destinationService: DestinationService) {}
+  constructor(private destinationService: DestinationService, private dialog: MatDialog) {}
 
-  ngOnInit(): void {
-    this.destinations = this.destinationService.list();
+  async ngOnInit() {
+    this.destinations = await this.destinationService.list();
   }
+
+  openCancelDialog(destinationCode: string) {
+    const dialogRef = this.dialog.open(CancelDestinationDialogComponent, {
+      data: { destinationCode }
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (result) {
+        await this.cancelDestination(destinationCode);
+      }
+    });
+  }
+
+  async cancelDestination(destinationCode: string) {
+    await this.destinationService.cancelDestination(destinationCode);
+    this.destinations = await this.destinationService.list();
+  }
+  
 }

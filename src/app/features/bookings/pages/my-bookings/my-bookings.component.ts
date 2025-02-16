@@ -39,7 +39,7 @@ export class MyBookingsComponent implements OnInit {
 
         // destination image
         if (!this.destinationImages[flight.destination]) {
-          const destination = this.destinationService.getByName(flight.destination);
+          const destination = await this.destinationService.getByName(flight.destination);
           this.destinationImages[flight.destination] = destination ? destination.imageUrl : 'assets/default-image.jpg';
         }
       }
