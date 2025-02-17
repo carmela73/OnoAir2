@@ -32,6 +32,7 @@ export class FlightsTableComponent implements OnInit {
   uniqueOrigins: string[] = [];
   uniqueDestinations: string[] = [];
   allFlights: Flight[] = [];
+  homepage: boolean = false;
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -39,6 +40,7 @@ export class FlightsTableComponent implements OnInit {
 
   async ngOnInit() {
     this.isAdmin = this.route.routeConfig?.path === 'flights'; // manager screen
+    this.homepage = this.route.routeConfig?.path === ''; // homepage
     this.tableTitle = this.isAdmin ? 'Manage Flights' : 'Book a Flight';
 
     this.displayedColumns = this.isAdmin 

@@ -1,7 +1,7 @@
 <div class="flights-container">
   <h2 class="title">{{ tableTitle }}</h2>
 
-  <div class="filter-container" *ngIf="!isAdmin">
+  <div class="filter-container" *ngIf="!isAdmin && !homepage">
     <mat-form-field>
       <mat-label>From:</mat-label>
       <mat-select [(ngModel)]="selectedOrigin" (selectionChange)="applyFilters()">
