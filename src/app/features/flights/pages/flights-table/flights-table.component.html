@@ -1,5 +1,28 @@
 <div class="flights-container">
   <h2 class="title">{{ tableTitle }}</h2>
+
+  <div class="filter-container" *ngIf="!isAdmin">
+    <mat-form-field>
+      <mat-label>From:</mat-label>
+      <mat-select [(ngModel)]="selectedOrigin" (selectionChange)="applyFilters()">
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let origin of uniqueOrigins" [value]="origin">
+          {{ origin }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field>
+      <mat-label>To:</mat-label>
+      <mat-select [(ngModel)]="selectedDestination" (selectionChange)="applyFilters()">
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let destination of uniqueDestinations" [value]="destination">
+          {{ destination }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  
   <table mat-table [dataSource]="flights" matSort class="mat-elevation-z8">
 
     <ng-container matColumnDef="flightNumber">
@@ -64,4 +87,9 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+
+  <div *ngIf="isNoFlights" class="no-flights-message">
+    No flights match your search criteria.
+  </div>  
+  
 </div>
