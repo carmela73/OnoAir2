@@ -25,7 +25,7 @@ export class MyBookingsComponent implements OnInit {
 
   async ngOnInit() {
     const now = new Date();
-    const allBookings = this.bookingService.list();
+    const allBookings = await this.bookingService.list();
 
     // split bookings into upcoming and previous
     for (const booking of allBookings) {

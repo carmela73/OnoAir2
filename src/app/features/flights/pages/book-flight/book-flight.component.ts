@@ -31,7 +31,7 @@ export class BookFlightComponent implements OnInit {
 
     if (bookingId) {
       this.isViewMode = true;
-      this.booking = this.bookingService.get(bookingId);
+      this.booking = await this.bookingService.get(bookingId);
       if (this.booking) {
         this.flight = await this.flightService.get(this.booking.flightNumber);
       }
