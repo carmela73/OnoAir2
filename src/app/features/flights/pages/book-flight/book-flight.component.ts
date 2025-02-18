@@ -40,11 +40,11 @@ export class BookFlightComponent implements OnInit {
   
   async ngOnInit() {
     this.route.paramMap.subscribe(async params => {
-      const bookingId = params.get('bookingId');
-      const flightNumber = params.get('flightNumber');
+      this.bookingId = this.bookingId || params.get('bookingId') || undefined;
+      this.flightNumber = this.flightNumber || params.get('flightNumber') || undefined;  
   
-      if (bookingId) {
-        const bookingData = await this.bookingService.get(bookingId);
+      if (this.bookingId) {
+        const bookingData = await this.bookingService.get(this.bookingId);
   
         if (bookingData) {
           this.booking = bookingData;
@@ -52,8 +52,8 @@ export class BookFlightComponent implements OnInit {
           this.flight = await this.flightService.get(this.booking.flightNumber) || null;
           this.numberOfPassengers = this.booking.passengers.length;
         }
-      } else if (flightNumber) {
-        const flightData = await this.flightService.get(flightNumber);
+      } else if (this.flightNumber) {
+        const flightData = await this.flightService.get(this.flightNumber);
   
         if (flightData) {
           this.flight = flightData;
@@ -67,21 +67,22 @@ export class BookFlightComponent implements OnInit {
   }  
   
   updatePassengers() {
-    let count = Number(this.numberOfPassengers);
+    let maxSeats = this.flight?.numberOfSeats || 1;
+    let count = Math.min(Number(this.numberOfPassengers), maxSeats); // הגבלת מספר הנוסעים
   
     if (!count || count < 1) {
       this.passengers = [];
       return;
     }
-  
+    if (!this.passengers) {
+      this.passengers = [];
+    }
     while (this.passengers.length < count) {
       this.passengers.push(new Passenger('', ''));
     }
-  
-    while (this.passengers.length > count) {
-      this.passengers.pop();
+    if (this.passengers.length > count) {
+      this.passengers = this.passengers.slice(0, count);
     }
-
     this.validateBookingForm();
   }
   
@@ -103,7 +104,6 @@ export class BookFlightComponent implements OnInit {
     const bookingId = this.booking?.bookingId || Booking.generateBookingId();
     const id = this.booking?.id || bookingId;
 
-
     const updatedBooking = new Booking(
       id,
       bookingId,
@@ -111,7 +111,6 @@ export class BookFlightComponent implements OnInit {
       [...this.passengers],
       BookingStatus.Active
     );
-
 
       if (this.booking) {
         await this.bookingService.updateBooking(updatedBooking);
@@ -140,6 +139,7 @@ export class BookFlightComponent implements OnInit {
   
     for (const passenger of this.passengers) {
       if (!passenger.name?.trim() || !nameRegex.test(passenger.name) ||
+          passenger.name.length < 2 || 
           !passenger.passportNumber?.trim() || !passportRegex.test(passenger.passportNumber)) {
         return;
       }
@@ -152,6 +152,4 @@ export class BookFlightComponent implements OnInit {
       this.isFormInvalid = false;
   }
   
-  
- 
 }
