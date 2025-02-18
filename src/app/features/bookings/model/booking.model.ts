@@ -6,7 +6,7 @@ export enum BookingStatus {
 export class Booking {
     constructor(
       public id: string, //firebase id
-      public bookingId: string,       
+      public bookingId: string = Booking.generateBookingId(),       
       public flightNumber: string,     
       public passengers: Passenger[],
       public status: BookingStatus =  BookingStatus.Active // default value
@@ -14,6 +14,10 @@ export class Booking {
   
     get numberOfPassengers(): number {
       return this.passengers.length;
+    }
+
+    static generateBookingId(): string {
+      return Math.random().toString(36).slice(2,6).toUpperCase(); 
     }
   }
   

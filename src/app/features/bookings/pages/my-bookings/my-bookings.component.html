@@ -6,10 +6,17 @@
         <img [src]="getDestinationImage(item.flight.destination)" alt="Destination Image" class="destination-image">
       </div>
       <div class="details-container">
-        <p><strong>Origin:</strong> {{ item.flight.origin }} Boarding: {{ item.flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
-        <p><strong>Destination:</strong> {{ item.flight.destination }} Landing: {{ item.flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Booking ID:</strong> {{ item.booking.bookingId }}</p>
+        <p><strong>Origin:</strong> {{ item.flight.origin }} <strong>Boarding:</strong> {{ item.flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p><strong>Destination:</strong> {{ item.flight.destination }} <strong>Landing:</strong> {{ item.flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
         <p><strong>No. of passengers:</strong> {{ item.booking.numberOfPassengers }}</p>
-        <button mat-raised-button color="primary" class="view-button" [routerLink]="['/view-booking', item.booking.bookingId]">View</button>       
+        <div class="passenger-list">
+          <div *ngFor="let passenger of item.booking.passengers; let i = index" class="passenger-row">
+            <span class="passenger-name"><strong>Passenger {{ i + 1 }}:</strong> {{ passenger.name }}</span>
+            <span class="passport-number"><strong>Passport:</strong> {{ passenger.passportNumber }}</span>
+          </div>
+        </div>        
+        <button mat-raised-button color="primary" class="view-button" [routerLink]="['/view-booking', item.booking.bookingId]">Edit</button>       
       </div>
     </div>
   </div>

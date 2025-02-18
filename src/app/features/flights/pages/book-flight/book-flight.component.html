@@ -1,21 +1,46 @@
-<div class="booking-details-container">
-  <h2 *ngIf="!isViewMode">Book a flight</h2>
-  <h2 *ngIf="isViewMode">Booking Details</h2>
+<mat-card class="booking-card">
+  <h2>{{ booking ? 'Edit Booking ' + booking.bookingId + '' : 'Book Flight' }}</h2>
 
-  <div *ngIf="flight" class="flight-details">
-    <p><strong>Origin:</strong> {{ flight.origin }} <strong>Boarding:</strong> {{ flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
-    <p><strong>Destination:</strong> {{ flight.destination }} <strong>Landing:</strong> {{ flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+  <div *ngIf="showSuccessMessage" class="success-message">
+    <h3>Booking successfully saved!</h3>
+  </div>
 
-    <div *ngIf="isViewMode && booking">
-      <p><strong>No. of passengers:</strong> {{ booking.numberOfPassengers }}</p>
-      <div *ngFor="let passenger of booking.passengers; let i = index">
-        <p><strong>Passenger {{ i + 1 }}</strong></p>
-        <p>Name: {{ passenger.name }}</p>
-        <p>Passport no.: {{ passenger.passportNumber }}</p>
-      </div>
-    </div>
+  <div *ngIf="flight">
+    <p><strong>Flight No:</strong> {{ flight.flightNumber }}</p>
+    <p><strong>Origin:</strong> {{ flight.origin }}</p>
+    <p><strong>Destination:</strong> {{ flight.destination }}</p>
+    <p><strong>Boarding Date:</strong> {{ flight.boardingDate | date: 'dd/MM/yyyy HH:mm' }}</p>
+    <p><strong>Arrival Date:</strong> {{ flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
   </div>
-  <div *ngIf="!flight">
-    <p>Flight details not found.</p>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Number of Passengers</mat-label>
+    <input matInput type="number" [(ngModel)]="numberOfPassengers" required (input)="updatePassengers()" min="1" #passengerInput="ngModel">
+    <mat-error *ngIf="passengerInput?.errors?.['required']">Number of passenger is required</mat-error>
+    <mat-error *ngIf="passengerInput?.errors?.['min']">At least 1 passenger is required</mat-error>
+  </mat-form-field>
+
+  <div *ngIf="numberOfPassengers && numberOfPassengers >= 1">
+  <div *ngFor="let passenger of passengers; let i = index" class="passenger-row">
+    <mat-form-field appearance="fill">
+      <mat-label>Passenger {{ i + 1 }} Name</mat-label>
+      <input matInput [(ngModel)]="passenger.name" required pattern="^[A-Za-z ]+$" #nameInput="ngModel" (input)="validateBookingForm()">
+      <mat-error *ngIf="nameInput?.errors?.['required']">Paseenger name is required</mat-error>
+      <mat-error *ngIf="nameInput?.errors?.['pattern']">Only English letters are allowed</mat-error>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill">
+      <mat-label>Passport Number</mat-label>
+      <input matInput [(ngModel)]="passenger.passportNumber" required pattern="^[0-9]{9}$" #passportInput="ngModel" (input)="validateBookingForm()">
+      <mat-error *ngIf="passportInput?.errors?.['required']">Pasport number is required</mat-error>
+      <mat-error *ngIf="passportInput?.errors?.['pattern']">Passport number must be 9 digits</mat-error>
+    </mat-form-field>
   </div>
-</div>
+  </div>
+
+  <div class="button-container">
+  <button mat-raised-button color="primary" (click)="saveBooking()" [disabled]="isFormInvalid">
+    {{ booking?.bookingId ? 'Update Booking' : 'Confirm Booking' }}
+  </button>
+  </div>
+</mat-card>

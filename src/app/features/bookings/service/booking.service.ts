@@ -17,25 +17,68 @@ export class BookingService {
   }
 
   async get(bookingId: string): Promise<Booking | undefined> {
-    const bookingRef = doc(this.firestore, 'bookings', bookingId).withConverter(bookingConverter);
-    const bookingSnap = await getDoc(bookingRef);
-    return bookingSnap.exists() ? bookingSnap.data() : undefined;
+  
+    const bookingsCollection = collection(this.firestore, 'bookings').withConverter(bookingConverter);
+    const q = query(bookingsCollection, where('bookingId', '==', bookingId));
+    const querySnapshot = await getDocs(q);
+  
+    if (querySnapshot.empty) {
+      return undefined;
+    }
+  
+    const bookingData = querySnapshot.docs[0].data();
+    return bookingData;
   }
 
-  async addBooking(booking: Booking): Promise<void> {
+  async addBooking(booking: Booking) {
+    if (!booking.bookingId) {
+      booking.bookingId = Booking.generateBookingId();
+    }
+
     const bookingsCollection = collection(this.firestore, 'bookings').withConverter(bookingConverter);
     await addDoc(bookingsCollection, booking);
   }
 
-  async updateBooking(booking: Booking): Promise<void> {
-    const bookingRef = doc(this.firestore, 'bookings', booking.bookingId).withConverter(bookingConverter);
-    await updateDoc(bookingRef, {
-      flightNumber: booking.flightNumber,
-      passengers: booking.passengers.map(p => ({ name: p.name, passportNumber: p.passportNumber })),
-      status: booking.status
-    });
-  }
 
+  async updateBooking(booking: Booking): Promise<void> {
+    if (!booking.id) {
+      return;
+    }
+  
+    const bookingRef = doc(this.firestore, 'bookings', booking.id).withConverter(bookingConverter);
+  
+
+      const docSnap = await getDoc(bookingRef);
+  
+      if (!docSnap.exists()) {
+        return;
+      }
+    
+      await updateDoc(bookingRef, {
+        flightNumber: booking.flightNumber,
+        passengers: booking.passengers.map(p => ({ name: p.name, passportNumber: p.passportNumber })),
+        status: booking.status
+      });
+  }  
+  
+  async isPassportNumberUsed(passportNumber: string, currentBookingId?: string): Promise<boolean> {
+  
+    const bookingsSnapshot = await getDocs(collection(this.firestore, 'bookings'));
+  
+    for (const doc of bookingsSnapshot.docs) {
+      const booking = doc.data() as Booking;
+  
+      if (currentBookingId && booking.bookingId === currentBookingId) {
+        continue; 
+      }
+  
+      if (booking.passengers.some(p => p.passportNumber === passportNumber)) {
+        return true;
+      }
+    }
+      return false;
+  }
+  
   async cancelBooking(bookingId: string): Promise<void> {
     const bookingRef = doc(this.firestore, 'bookings', bookingId).withConverter(bookingConverter);
     await updateDoc(bookingRef, { status: BookingStatus.Cancelled });
