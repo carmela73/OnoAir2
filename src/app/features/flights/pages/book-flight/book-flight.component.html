@@ -15,17 +15,19 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Number of Passengers</mat-label>
-    <input matInput type="number" [(ngModel)]="numberOfPassengers" required (input)="updatePassengers()" min="1" #passengerInput="ngModel">
+    <input matInput type="number" [(ngModel)]="numberOfPassengers" required (input)="updatePassengers()" min="1"  [max]="flight?.numberOfSeats ?? 1" #passengerInput="ngModel">
     <mat-error *ngIf="passengerInput?.errors?.['required']">Number of passenger is required</mat-error>
     <mat-error *ngIf="passengerInput?.errors?.['min']">At least 1 passenger is required</mat-error>
+    <mat-error *ngIf="passengerInput.value > (flight?.numberOfSeats ?? 1)">Can't exceed available seats ({{ flight?.numberOfSeats ?? 1 }})</mat-error>
   </mat-form-field>
 
   <div *ngIf="numberOfPassengers && numberOfPassengers >= 1">
   <div *ngFor="let passenger of passengers; let i = index" class="passenger-row">
     <mat-form-field appearance="fill">
       <mat-label>Passenger {{ i + 1 }} Name</mat-label>
-      <input matInput [(ngModel)]="passenger.name" required pattern="^[A-Za-z ]+$" #nameInput="ngModel" (input)="validateBookingForm()">
+      <input matInput [(ngModel)]="passenger.name" required pattern="^[A-Za-z ]+$" minlength="2" #nameInput="ngModel" (input)="validateBookingForm()">
       <mat-error *ngIf="nameInput?.errors?.['required']">Paseenger name is required</mat-error>
+      <mat-error *ngIf="nameInput?.errors?.['minlength']">Passenger name must be at least 2 characters long</mat-error>
       <mat-error *ngIf="nameInput?.errors?.['pattern']">Only English letters are allowed</mat-error>
     </mat-form-field>
     
