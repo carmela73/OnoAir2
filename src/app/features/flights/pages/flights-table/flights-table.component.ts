@@ -11,7 +11,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CancelFlightDialogComponent } from '../cancel-flight-dialog/cancel-flight-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-
+import { BookingService } from '../../../bookings/service/booking.service';
 
 @Component({
   selector: 'app-flights-table',
@@ -36,7 +36,7 @@ export class FlightsTableComponent implements OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private flightService: FlightService, private router: Router, private route: ActivatedRoute, private dialog: MatDialog) {}
+  constructor(private flightService: FlightService, private router: Router, private route: ActivatedRoute, private bookingService: BookingService, private dialog: MatDialog) {}
 
   async ngOnInit() {
     this.isAdmin = this.route.routeConfig?.path === 'flights'; // manager screen
@@ -68,17 +68,29 @@ export class FlightsTableComponent implements OnInit {
     this.router.navigate(['/edit-flight', flightNumber]);
   }  
 
-  openCancelDialog(flightNumber: string) {
+  async openCancelDialog(flightNumber: string) {
+    const hasActiveBookings = await this.bookingService.hasActiveBookings(flightNumber);
+  
+    if (hasActiveBookings) {
+      this.dialog.open(CancelFlightDialogComponent, {
+        data: { 
+          flightNumber, 
+          errorMessage: `Cannot cancel flight ${flightNumber} because there are active bookings.`
+        }
+      });
+      return;
+    }
+  
     const dialogRef = this.dialog.open(CancelFlightDialogComponent, {
-      data: { flightNumber }
+      data: { flightNumber, errorMessage: null }
     });
-
+  
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result) { 
+      if (result) {
         await this.cancelFlight(flightNumber);
       }
     });
-  }
+  }  
 
   async cancelFlight(flightNumber: string) {
     await this.flightService.cancelFlight(flightNumber); 

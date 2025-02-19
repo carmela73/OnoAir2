@@ -12,11 +12,16 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class CancelFlightDialogComponent {
   constructor(
-    private dialogRef: MatDialogRef<CancelFlightDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { flightNumber: string }
+    public dialogRef: MatDialogRef<CancelFlightDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { flightNumber: string; errorMessage?: string }
   ) {}
 
-  closeDialog(confirm: boolean) {
-    this.dialogRef.close(confirm);
+  closeDialog() : void {
+    this.dialogRef.close(false);
   }
+
+  confirmCancel(): void {
+    this.dialogRef.close(true);
+  }
+
 }

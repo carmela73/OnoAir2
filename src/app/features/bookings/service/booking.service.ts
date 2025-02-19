@@ -95,4 +95,9 @@ export class BookingService {
     return updatedBooking;
   }
 
+  async hasActiveBookings(flightNumber: string): Promise<boolean> {
+    const bookings = await this.list();
+    return bookings.some(booking => booking.flightNumber === flightNumber && booking.status === 'Active');
+  }
+
 }

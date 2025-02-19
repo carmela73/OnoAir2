@@ -1,8 +1,14 @@
 <h2 mat-dialog-title>Cancel Flight</h2>
-<mat-dialog-content>
-  Are you sure you want to cancel flight {{ data.flightNumber }}?
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="false">No</button>
-  <button mat-button color="warn" [mat-dialog-close]="true">Yes</button>
-</mat-dialog-actions>
+
+<div mat-dialog-content>
+  <p *ngIf="data.errorMessage; else confirmMessage">{{ data.errorMessage }}</p>
+  
+  <ng-template #confirmMessage>
+    <p>Are you sure you want to cancel flight <strong>{{ data.flightNumber }}</strong>?</p>
+  </ng-template>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="closeDialog()">No</button>
+  <button mat-button color="warn" *ngIf="!data.errorMessage" (click)="confirmCancel()">Yes</button>
+</div>
