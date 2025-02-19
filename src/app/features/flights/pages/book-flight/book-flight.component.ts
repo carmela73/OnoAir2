@@ -68,7 +68,7 @@ export class BookFlightComponent implements OnInit {
   
   updatePassengers() {
     let maxSeats = this.flight?.numberOfSeats || 1;
-    let count = Math.min(Number(this.numberOfPassengers), maxSeats); // הגבלת מספר הנוסעים
+    let count = Math.min(Number(this.numberOfPassengers), maxSeats); 
   
     if (!count || count < 1) {
       this.passengers = [];

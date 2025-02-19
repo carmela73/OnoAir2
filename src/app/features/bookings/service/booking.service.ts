@@ -79,9 +79,20 @@ export class BookingService {
       return false;
   }
   
-  async cancelBooking(bookingId: string): Promise<void> {
-    const bookingRef = doc(this.firestore, 'bookings', bookingId).withConverter(bookingConverter);
-    await updateDoc(bookingRef, { status: BookingStatus.Cancelled });
+  async cancelBooking(bookingId: string): Promise<Booking | null> {
+    const bookingSnapshot = await getDocs(query(collection(this.firestore, 'bookings').withConverter(bookingConverter), where('bookingId', '==', bookingId)));
+
+    if (bookingSnapshot.empty) {
+        return null;
+    }
+
+    const docRef = bookingSnapshot.docs[0].ref;
+    const updatedBooking = bookingSnapshot.docs[0].data();
+    updatedBooking.status = BookingStatus.Cancelled;
+
+    await updateDoc(docRef, { status: BookingStatus.Cancelled });
+
+    return updatedBooking;
   }
-  
+
 }

@@ -15,8 +15,16 @@
             <span class="passenger-name"><strong>Passenger {{ i + 1 }}:</strong> {{ passenger.name }}</span>
             <span class="passport-number"><strong>Passport:</strong> {{ passenger.passportNumber }}</span>
           </div>
-        </div>        
-        <button mat-raised-button color="primary" class="view-button" [routerLink]="['/view-booking', item.booking.bookingId]">Edit</button>       
+        </div>  
+        
+        <div class="button-container">
+          <button *ngIf="item.booking.status === 'Active' && item.flight?.boardingDate && (item.flight.boardingDate && item.flight.boardingDate > now)"
+                  mat-raised-button color="warn" (click)="openCancelDialog(item.booking.bookingId)">
+            Cancel
+          </button>
+        <button mat-raised-button color="primary" class="view-button" [routerLink]="['/view-booking', item.booking.bookingId]">Edit</button>   
+        </div>
+
       </div>
     </div>
   </div>
