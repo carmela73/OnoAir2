@@ -27,8 +27,8 @@
     <mat-form-field>
       <mat-label>Origin</mat-label>
       <mat-select name="origin" required [(ngModel)]="flight.origin" #originCtrl="ngModel">
-        <mat-option *ngFor="let destination of destinations" [value]="destination.name">
-          {{ destination.name }}
+        <mat-option *ngFor="let destination of destinations" [value]="destination.name" [disabled]="destination.status === 'Cancelled'">
+          {{ destination.name }} <span *ngIf="destination.status === 'Cancelled'"></span>
         </mat-option>
       </mat-select>
       <mat-error *ngIf="originCtrl.invalid && originCtrl.touched">Origin is required</mat-error>
@@ -38,8 +38,8 @@
     <mat-form-field>
       <mat-label>Destination</mat-label>
       <mat-select name="destination" required [(ngModel)]="flight.destination" #destinationCtrl="ngModel">
-        <mat-option *ngFor="let destination of destinations" [value]="destination.name">
-          {{ destination.name }}
+        <mat-option *ngFor="let destination of destinations" [value]="destination.name" [disabled]="destination.status === 'Cancelled'">
+          {{ destination.name }} <span *ngIf="destination.status === 'Cancelled'"></span>
         </mat-option>
       </mat-select>
       <mat-error *ngIf="destinationCtrl.invalid && destinationCtrl.touched">Destination is required</mat-error>
