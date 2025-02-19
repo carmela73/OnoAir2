@@ -80,6 +80,22 @@ export class FlightService {
       await updateDoc(flightRef, { status: FlightStatus.Cancelled });
     }
   }
+
+  async updateFlightStatus(flightNumber: string, status: 'Active' | 'Cancelled') {
+    const flightsRef = collection(this.firestore, 'flights');
+    const q = query(flightsRef, where('flightNumber', '==', flightNumber));
+    const querySnapshot = await getDocs(q);
   
+    if (querySnapshot.empty) {
+      return;
+    }
+  
+    const flightDoc = querySnapshot.docs[0];
+    const flightId = flightDoc.id;
+  
+    await updateDoc(doc(this.firestore, 'flights', flightId), { status });
+  
+    console.log(`Flight ${flightNumber} (Firestore ID: ${flightId}) updated to ${status}`);
+  }  
 
 }

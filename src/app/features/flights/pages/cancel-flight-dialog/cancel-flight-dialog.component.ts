@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class CancelFlightDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<CancelFlightDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { flightNumber: string; errorMessage?: string }
+    @Inject(MAT_DIALOG_DATA) public data: { flightNumber: string, errorMessage?: string, confirmMessage?: string }
   ) {}
 
   closeDialog() : void {

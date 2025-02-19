@@ -77,8 +77,8 @@
           <button mat-icon-button color="primary" [routerLink]="['/edit-flight', flight.flightNumber]">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="openCancelDialog(flight.flightNumber)">
-            <mat-icon>cancel</mat-icon>
+          <button mat-icon-button color="warn" (click)="toggleFlightStatus(flight)">
+            <mat-icon>{{ flight.status === 'Active' ? 'cancel' : 'restart_alt' }}</mat-icon>
           </button>
         </ng-container>
       </td>

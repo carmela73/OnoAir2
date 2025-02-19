@@ -109,4 +109,25 @@ export class FlightsTableComponent implements OnInit {
     this.isNoFlights = filteredFlights.length === 0;
   }
 
+  async toggleFlightStatus(flight: Flight) {
+    if (flight.status === 'Active') {
+      await this.openCancelDialog(flight.flightNumber);
+    } else {
+      const dialogRef = this.dialog.open(CancelFlightDialogComponent, {
+        data: { 
+          flightNumber: flight.flightNumber, 
+          confirmMessage: `Are you sure you want to reactivate flight ${flight.flightNumber}?`
+        }
+      });
+  
+      dialogRef.afterClosed().subscribe(async (result) => {
+        if (result) {
+          console.log(`Reactivating flight ${flight.flightNumber}`);
+          await this.flightService.updateFlightStatus(flight.flightNumber, 'Active'); 
+          await this.loadFlights(); 
+        }
+      });
+    }
+  }
+
 }
