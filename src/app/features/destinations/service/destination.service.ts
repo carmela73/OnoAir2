@@ -99,6 +99,22 @@ export class DestinationService {
     const querySnapshot = await getDocs(q);
     return !querySnapshot.empty; 
   }
+
+  async updateDestinationStatus(destinationCode: string, status: 'Active' | 'Cancelled') {
+    const destinationsRef = collection(this.firestore, 'destinations');
+    const q = query(destinationsRef, where('code', '==', destinationCode));
+    const querySnapshot = await getDocs(q);
+  
+    if (querySnapshot.empty) {
+      console.error(`No destination found in Firestore with code: ${destinationCode}`);
+      return;
+    }
+  
+    const destinationDoc = querySnapshot.docs[0];
+    const destinationId = destinationDoc.id;
+  
+    await updateDoc(doc(this.firestore, 'destinations', destinationId), { status });
+  }  
   
 
 }

@@ -26,9 +26,13 @@ export class DestinationsComponent implements OnInit {
   constructor(private destinationService: DestinationService, private dialog: MatDialog) {}
 
   async ngOnInit() {
-    this.destinations = await this.destinationService.list();
+    await this.loadDestinations();
   }
 
+  async loadDestinations() {
+    this.destinations = await this.destinationService.list();
+  }
+  
   async openCancelDialog(destinationCode: string) {
     const hasFlights = await this.destinationService.hasActiveFlights(destinationCode);
   
@@ -53,21 +57,31 @@ export class DestinationsComponent implements OnInit {
     });
   }
   
-  
   async cancelDestination(destinationCode: string) {
-    const success = await this.destinationService.cancelDestination(destinationCode);
-    if (success) {
-      this.destinations = await this.destinationService.list();
+    await this.destinationService.updateDestinationStatus(destinationCode, 'Cancelled'); 
+    await this.loadDestinations();
+  }
+
+  async toggleDestinationStatus(destination: Destination) {
+    if (destination.status === 'Active') {
+      await this.openCancelDialog(destination.code);
+    } else {
+      const dialogRef = this.dialog.open(CancelDestinationDialogComponent, {
+        data: { 
+          destinationCode: destination.code, 
+          confirmMessage: `Are you sure you want to reactivate destination ${destination.code}?`
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(async (result) => {
+        if (result) {
+          await this.destinationService.updateDestinationStatus(destination.code, 'Active'); 
+          await this.loadDestinations(); 
+        }
+      });
     }
   }
 
-  async confirmCancelDestination(destinationCode: string) {
-    const error = await this.destinationService.cancelDestination(destinationCode);
-    if (error) {
-      this.dialog.open(CancelDestinationDialogComponent, { data: { errorMessage: error } });
-    } else {
-      this.destinations = await this.destinationService.list(); 
-    }
-  }
+   
 
 }

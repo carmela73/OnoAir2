@@ -12,12 +12,10 @@ import { DestinationService } from '../../service/destination.service';
   styleUrls: ['./cancel-destination-dialog.component.css']
 })
 export class CancelDestinationDialogComponent {
-  errorMessage: string | null = null;
-  isProcessing = false;
 
   constructor(
     public  dialogRef: MatDialogRef<CancelDestinationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { destinationCode: string; errorMessage?: string },
+    @Inject(MAT_DIALOG_DATA) public data: { destinationCode: string, errorMessage?: string, confirmMessage?: string },
     private destinationService: DestinationService
   ) {}
 

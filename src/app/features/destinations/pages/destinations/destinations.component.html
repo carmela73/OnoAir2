@@ -56,8 +56,8 @@
           <button mat-icon-button color="primary" [routerLink]="['/view-destination', destination.code]">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="openCancelDialog(destination.code)">
-            <mat-icon>cancel</mat-icon>
+          <button mat-icon-button color="warn" (click)="toggleDestinationStatus(destination)">
+            <mat-icon>{{ destination.status === 'Active' ? 'cancel' : 'restart_alt' }}</mat-icon>
           </button>
         </td>
       </ng-container>

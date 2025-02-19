@@ -1,10 +1,10 @@
-<h2 mat-dialog-title>Cancel Destination</h2>
+<h2 mat-dialog-title>{{ data.errorMessage ? 'Cancel Destination' : 'Confirm Action' }}</h2>
 
 <div mat-dialog-content>
   <p *ngIf="data.errorMessage; else confirmMessage">{{ data.errorMessage }}</p>
   
   <ng-template #confirmMessage>
-    <p>Are you sure you want to cancel destination <strong>{{ data.destinationCode }}</strong>?</p>
+    <p>{{ data.confirmMessage ? data.confirmMessage : 'Are you sure you want to cancel destination ' + data.destinationCode + '?' }}</p>
   </ng-template>
 </div>
 

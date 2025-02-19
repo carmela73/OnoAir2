@@ -122,7 +122,6 @@ export class FlightsTableComponent implements OnInit {
   
       dialogRef.afterClosed().subscribe(async (result) => {
         if (result) {
-          console.log(`Reactivating flight ${flight.flightNumber}`);
           await this.flightService.updateFlightStatus(flight.flightNumber, 'Active'); 
           await this.loadFlights(); 
         }
