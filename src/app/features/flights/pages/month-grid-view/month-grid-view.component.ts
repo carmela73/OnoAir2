@@ -25,6 +25,7 @@ export class MonthGridViewComponent {
   onMonthSelected(event: Date, datepicker: any) {
     this.selectedMonth = new Date(2025, event.getMonth(), 1);
     datepicker.close();
+    this.applyFilters();
   }
 
   applyFilters() {
@@ -38,6 +39,6 @@ export class MonthGridViewComponent {
     this.selectedMonth = null;
     this.isApplyClicked = false;
     this.monthSelected.emit(null);
-  }
+  }  
 
 }

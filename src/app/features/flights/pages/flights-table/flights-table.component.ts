@@ -110,35 +110,25 @@ export class FlightsTableComponent implements OnInit {
   isNoFlights: boolean = false;
 
   async applyFilters() {
-    if (!this.boardingMonth) {
-        this.flights = new MatTableDataSource(await this.flightService.listFutureFlights());
-        this.isNoFlights = this.flights.data.length === 0;
-        return;
-    }
-
-    const startDate = new Date(2025, this.boardingMonth - 1, 1, 0, 0, 0);
-    const endDate = new Date(2025, this.boardingMonth, 0, 23, 59, 59);
-
-    let filteredFlights = await this.flightService.getFlightsByDateRange(startDate, endDate);
-
-    filteredFlights.forEach(flight => {
-        if (!(flight.boardingDate instanceof Date)) {
-            flight.boardingDate = new Date(flight.boardingDate);
-        }
-    });
-
+    let filteredFlights: Flight[];
+  
+    if (this.boardingMonth === undefined || this.boardingMonth === null) {
+      filteredFlights = await this.flightService.listFutureFlights();
+    } else {
+      const startDate = new Date(2025, this.boardingMonth - 1, 1, 0, 0, 0);
+      const endDate = new Date(2025, this.boardingMonth, 0, 23, 59, 59);
+  
+      filteredFlights = await this.flightService.getFlightsByDateRange(startDate, endDate);
+    }  
     filteredFlights = filteredFlights.filter(flight => {
-        const matchesOrigin = !this.selectedOrigin || flight.origin === this.selectedOrigin;
-        const matchesDestination = !this.selectedDestination || flight.destination === this.selectedDestination;
-        const isActive = flight.status === 'Active';
-        const isFutureFlight = flight.boardingDate > new Date();
-
-        return matchesOrigin && matchesDestination && isActive && isFutureFlight;
-    });
+      const matchesOrigin = !this.selectedOrigin || flight.origin === this.selectedOrigin;
+      const matchesDestination = !this.selectedDestination || flight.destination === this.selectedDestination;
+      return matchesOrigin && matchesDestination;
+    });  
     this.flights = new MatTableDataSource(filteredFlights);
     this.isNoFlights = filteredFlights.length === 0;
-  }
- 
+  }       
+
   async toggleFlightStatus(flight: Flight) {
     if (flight.status === 'Active') {
       await this.openCancelDialog(flight.flightNumber);
@@ -166,12 +156,11 @@ export class FlightsTableComponent implements OnInit {
       this.boardingMonth = selectedMonth;
     }
     this.applyFilters();
-  } 
+  }  
   
   onDateSelected(selectedDate: Date) {
     this.boardingDate = selectedDate;
     this.applyFilters();
   }  
   
-
 }

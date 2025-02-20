@@ -17,7 +17,8 @@ export class DatePickerComponent {
   selectedMonth: number | null = null; 
 
   @Output() dateSelected = new EventEmitter<Date>();
-  @Output() monthSelected = new EventEmitter<number>();
+  @Output() monthSelected = new EventEmitter<number | null>();
+  boardingMonth?: number;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -30,8 +31,8 @@ export class DatePickerComponent {
     this.dateSelected.emit(date);
   }
 
-  onMonthSelected(selectedMonth: number) {
-    this.monthSelected.emit(selectedMonth);
+  onMonthSelected(selectedMonth: number | null) {
+    this.monthSelected.emit(selectedMonth); 
   }
   
 }
