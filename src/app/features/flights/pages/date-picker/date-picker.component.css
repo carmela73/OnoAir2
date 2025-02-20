@@ -1,0 +1,15 @@
+.date-picker-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  mat-button-toggle-group {
+    background: #f5f5f5;
+    border-radius: 8px;
+  }
+  
+  mat-button-toggle {
+    padding: 10px;
+  }
+  

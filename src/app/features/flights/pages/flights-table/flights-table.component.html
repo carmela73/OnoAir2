@@ -21,6 +21,11 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <app-date-picker 
+    (dateSelected)="onDateSelected($event)"
+    (monthSelected)="onMonthSelected($event)">
+  </app-date-picker>
   </div>
   
   <table mat-table [dataSource]="flights" matSort class="mat-elevation-z8">

@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Flight, FlightStatus } from '../model/flight.model';
-import { Firestore, collection, collectionData, addDoc, doc, getDocs, getDoc, updateDoc, deleteDoc, query, where} from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, addDoc, doc, getDocs, getDoc, updateDoc, deleteDoc, query, where, orderBy, endAt} from '@angular/fire/firestore';
 import { flightConverter } from '../flight-converter';
+import { Observable } from 'rxjs';
+import { Timestamp } from '@angular/fire/firestore';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +28,11 @@ export class FlightService {
       .map(doc => doc.data())
       .filter(flight => new Date(flight.boardingDate) > today && flight.status === 'Active'); 
   }
+
+  listFutureFlightsObservable(): Observable<Flight[]> {
+    const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
+    return collectionData(flightsCollection) as Observable<Flight[]>;
+  }  
 
   async get(flightNumber: string): Promise<Flight | undefined> {  
     const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
@@ -95,7 +103,24 @@ export class FlightService {
   
     await updateDoc(doc(this.firestore, 'flights', flightId), { status });
   
-    console.log(`Flight ${flightNumber} (Firestore ID: ${flightId}) updated to ${status}`);
-  }  
+  } 
+  
+  async getFlightsByDateRange(startDate: Date, endDate: Date): Promise<Flight[]> {
+    const flightsSnapshot = await getDocs(
+        query(
+          collection(this.firestore, 'flights').withConverter(flightConverter),
+          where('boardingDate', '>=', Timestamp.fromDate(startDate)),
+          orderBy('boardingDate'), 
+          endAt(Timestamp.fromDate(endDate)) 
+        )
+    );
+
+    const flights = flightsSnapshot.docs.map(doc => {
+        const flight = doc.data();
+        return flight;
+    });
+
+    return flights;
+  } 
 
 }

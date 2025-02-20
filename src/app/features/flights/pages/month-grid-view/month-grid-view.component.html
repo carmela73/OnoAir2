@@ -1,0 +1,16 @@
+<div class="month-grid">
+  <mat-form-field appearance="outline">
+    <mat-label>Select Month</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="selectedMonth" readonly>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker startView="year" (monthSelected)="onMonthSelected($event, picker)" panelClass="month-picker">
+    </mat-datepicker>
+  </mat-form-field>
+  
+  <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="!selectedMonth">
+    Apply
+  </button>
+  <button mat-raised-button color="primary" (click)="clearSelection()" [disabled]="!isApplyClicked">
+    Clear
+  </button>
+  
