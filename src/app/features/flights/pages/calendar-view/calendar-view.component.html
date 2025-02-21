@@ -1,0 +1,16 @@
+<div class="date-filter-container">
+<mat-form-field>
+  <mat-label>Select Date Range</mat-label>
+  <mat-date-range-input [rangePicker]="picker">
+    <input matStartDate placeholder="Departure Date" [(ngModel)]="departureDate">
+    <input matEndDate placeholder="Return Date" [(ngModel)]="returnDate">
+  </mat-date-range-input>
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-date-range-picker #picker></mat-date-range-picker>
+</mat-form-field>
+
+  <div class="buttons-container">
+    <button mat-raised-button color="primary" [disabled]="!departureDate || !returnDate" (click)="applySelection()">Apply</button>
+    <button mat-raised-button color="primary" (click)="clearSelection()">Clear</button>
+  </div>
+</div>

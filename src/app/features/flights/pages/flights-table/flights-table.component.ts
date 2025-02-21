@@ -48,6 +48,8 @@ export class FlightsTableComponent implements OnInit {
   departureDate: Date | null = null;
   returnDate: Date | null = null;
 
+  isNoFlights: boolean = false;
+
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private flightService: FlightService, private router: Router, private route: ActivatedRoute, private bookingService: BookingService, private dialog: MatDialog) {}
@@ -69,6 +71,7 @@ export class FlightsTableComponent implements OnInit {
   
     this.allFlights = this.isAdmin ? allFlights : futureFlights;
     this.flights = new MatTableDataSource(this.allFlights);
+    this.isNoFlights = this.allFlights.length === 0; 
   
     this.uniqueOrigins = [...new Set(this.allFlights.map(flight => flight.origin))];
     this.uniqueDestinations = [...new Set(this.allFlights.map(flight => flight.destination))];
@@ -110,8 +113,6 @@ export class FlightsTableComponent implements OnInit {
     await this.flightService.cancelFlight(flightNumber); 
     await this.loadFlights();
   }
-
-  isNoFlights: boolean = false;
 
   async applyMonthFilter() {
     let filteredFlights: Flight[];
@@ -166,24 +167,31 @@ export class FlightsTableComponent implements OnInit {
         return;
     }
     let filteredFlights = await this.flightService.getFlightsBySpecificDateRange(this.departureDate, this.returnDate);
+    const now = new Date();
     filteredFlights = filteredFlights.filter(flight => {
-        const matchesOrigin = !this.selectedOrigin || flight.origin === this.selectedOrigin;
-        const matchesDestination = !this.selectedDestination || flight.destination === this.selectedDestination;
-        return matchesOrigin && matchesDestination;
-    });
+      const flightDateTime = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+      const matchesOrigin = !this.selectedOrigin || flight.origin === this.selectedOrigin;
+      const matchesDestination = !this.selectedDestination || flight.destination === this.selectedDestination;
+
+      return matchesOrigin && matchesDestination && flight.status === 'Active' && flightDateTime > now;
+  });
     this.flights = new MatTableDataSource(filteredFlights);
     this.isNoFlights = filteredFlights.length === 0;
   }
 
-onDateRangeSelected(range: [Date | null, Date | null]) {  
-  if (!range[0] || !range[1]) {
-      return;
+  async onDateRangeSelected(range: [Date | null, Date | null]) {  
+    if (!range[0] || !range[1]) { 
+        this.departureDate = null;
+        this.returnDate = null;
+        await this.loadFlights(); 
+        this.isNoFlights = this.flights.data.length === 0;
+        return;
+    }
+    this.departureDate = range[0];
+    this.returnDate = range[1];
+    this.applyDateRangeFilter();
   }
-  this.departureDate = range[0];
-  this.returnDate = range[1];
-  this.applyDateRangeFilter();
-}
-
+  
   async filterByLocation() {
     const filteredFlights = this.allFlights.filter(flight => 
         (!this.selectedOrigin || flight.origin === this.selectedOrigin) &&

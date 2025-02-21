@@ -1,0 +1,10 @@
+.buttons-container {
+    display: flex;
+    gap: 10px;
+  }
+
+.month-grid {
+    display: flex;
+    align-items: center;
+    gap: 16px; 
+}

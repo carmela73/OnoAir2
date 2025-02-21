@@ -1,5 +1,5 @@
 <div class="month-grid">
-  <mat-form-field appearance="outline">
+  <mat-form-field>
     <mat-label>Select Month</mat-label>
     <input matInput [matDatepicker]="picker" [(ngModel)]="selectedMonth" readonly>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -7,10 +7,13 @@
     </mat-datepicker>
   </mat-form-field>
   
+  <div class="buttons-container">
   <button mat-raised-button color="primary" (click)="applyMonthFilter()" [disabled]="!selectedMonth">
     Apply
   </button>
   <button mat-raised-button color="primary" (click)="clearSelection()" [disabled]="!isApplyClicked">
     Clear
   </button>
+  </div>
+</div>
   

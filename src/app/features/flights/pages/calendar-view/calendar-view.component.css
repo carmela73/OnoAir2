@@ -1,0 +1,28 @@
+.date-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+}
+.date-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.date-input {
+  flex-grow: 1;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  min-width: 90px;
+}
