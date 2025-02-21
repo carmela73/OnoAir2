@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Flight, FlightStatus } from '../model/flight.model';
 import { Firestore, collection, collectionData, addDoc, doc, getDocs, getDoc, updateDoc, deleteDoc, query, where, orderBy, endAt} from '@angular/fire/firestore';
 import { flightConverter } from '../flight-converter';
-import { Observable } from 'rxjs';
 import { Timestamp } from '@angular/fire/firestore';
 
 
@@ -22,29 +21,16 @@ export class FlightService {
   async listFutureFlights(): Promise<Flight[]> {
     const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
     const querySnapshot = await getDocs(flightsCollection);
-    const today = new Date();
+    const now = new Date();
     
     return querySnapshot.docs
       .map(doc => doc.data())
-      .filter(flight => new Date(flight.boardingDate) > today && flight.status === 'Active'); 
+      .filter(flight => {
+        const flightDateTime = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+        return flightDateTime > now && flight.status === 'Active'; 
+      });
   }
 
-  listFutureFlightsObservable(): Observable<Flight[]> {
-    const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
-    return collectionData(flightsCollection) as Observable<Flight[]>;
-  }  
-
-  async get(flightNumber: string): Promise<Flight | undefined> {  
-    const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
-    const q = query(flightsCollection, where('flightNumber', '==', flightNumber));
-    const querySnapshot = await getDocs(q);
-    
-    if (!querySnapshot.empty) {
-      const flight = querySnapshot.docs[0].data();
-      return flight;
-    }
-    return undefined;
-  }
 
   async updateFlight(flight: Flight): Promise<void> {
     if (!flight.id) {
@@ -76,6 +62,17 @@ export class FlightService {
       await addDoc(flightsCollection, flight);
   }
 
+  async get(flightNumber: string): Promise<Flight | undefined> {
+    const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
+    const q = query(flightsCollection, where('flightNumber', '==', flightNumber));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+        return querySnapshot.docs[0].data();
+    } else {
+        return undefined;
+    }
+  }
+
   async cancelFlight(flightNumber: string): Promise<void> {
     const flightsCollection = collection(this.firestore, 'flights').withConverter(flightConverter);
     const q = query(flightsCollection, where('flightNumber', '==', flightNumber));
@@ -105,22 +102,41 @@ export class FlightService {
   
   } 
   
-  async getFlightsByDateRange(startDate: Date, endDate: Date): Promise<Flight[]> {
+  async getFlightsByDateRange(startDate: Date, endDate: Date): Promise<Flight[]> {  
     const flightsSnapshot = await getDocs(
         query(
           collection(this.firestore, 'flights').withConverter(flightConverter),
-          where('boardingDate', '>=', Timestamp.fromDate(startDate)),
+          where('boardingDate', '>', Timestamp.fromDate(startDate)), // 🔥 האם באמת מדלג על היום?
           orderBy('boardingDate'), 
           endAt(Timestamp.fromDate(endDate)) 
         )
     );
-
-    const flights = flightsSnapshot.docs.map(doc => {
-        const flight = doc.data();
-        return flight;
-    });
-
+    const flights = flightsSnapshot.docs.map(doc => doc.data()).filter(flight => flight.status === 'Active');
     return flights;
-  } 
+  }
+
+  async getFlightsBySpecificDateRange(startDate: Date, endDate: Date): Promise<Flight[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+    const todayTimestamp = Timestamp.fromDate(today);
+
+    const startTimestamp = Timestamp.fromDate(startDate);
+    const adjustedEndDate = new Date(endDate);
+    adjustedEndDate.setHours(23, 59, 59, 999);
+    const endTimestamp = Timestamp.fromDate(adjustedEndDate);
+    const flightsSnapshot = await getDocs(
+        query(
+          collection(this.firestore, 'flights').withConverter(flightConverter),
+          where('boardingDate', '>', todayTimestamp),  
+          where('boardingDate', '>=', startTimestamp), 
+          where('boardingDate', '<=', endTimestamp),
+          orderBy('boardingDate')
+        )
+    );
+    const flights = flightsSnapshot.docs
+        .map(doc => doc.data())
+        .filter(flight => flight.status === 'Active');
+    return flights;
+  }
 
 }

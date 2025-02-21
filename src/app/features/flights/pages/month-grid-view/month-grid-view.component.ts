@@ -25,10 +25,10 @@ export class MonthGridViewComponent {
   onMonthSelected(event: Date, datepicker: any) {
     this.selectedMonth = new Date(2025, event.getMonth(), 1);
     datepicker.close();
-    this.applyFilters();
+    this.isApplyClicked = false;
   }
 
-  applyFilters() {
+  applyMonthFilter(){
     if (this.selectedMonth) {
       this.isApplyClicked = true;
       this.monthSelected.emit(this.selectedMonth.getMonth() + 1);
