@@ -7,7 +7,7 @@
     </mat-datepicker>
   </mat-form-field>
   
-  <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="!selectedMonth">
+  <button mat-raised-button color="primary" (click)="applyMonthFilter()" [disabled]="!selectedMonth">
     Apply
   </button>
   <button mat-raised-button color="primary" (click)="clearSelection()" [disabled]="!isApplyClicked">

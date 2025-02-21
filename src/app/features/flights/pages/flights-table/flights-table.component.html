@@ -4,7 +4,7 @@
   <div class="filter-container" *ngIf="!isAdmin && !homepage">
     <mat-form-field>
       <mat-label>From:</mat-label>
-      <mat-select [(ngModel)]="selectedOrigin" (selectionChange)="applyFilters()">
+      <mat-select [(ngModel)]="selectedOrigin" (selectionChange)="filterByLocation()">
         <mat-option value="">All</mat-option>
         <mat-option *ngFor="let origin of uniqueOrigins" [value]="origin">
           {{ origin }}
@@ -14,19 +14,21 @@
   
     <mat-form-field>
       <mat-label>To:</mat-label>
-      <mat-select [(ngModel)]="selectedDestination" (selectionChange)="applyFilters()">
+      <mat-select [(ngModel)]="selectedDestination" (selectionChange)="filterByLocation()">
         <mat-option value="">All</mat-option>
         <mat-option *ngFor="let destination of uniqueDestinations" [value]="destination">
           {{ destination }}
         </mat-option>
       </mat-select>
     </mat-form-field>
-
-    <app-date-picker 
-    (dateSelected)="onDateSelected($event)"
-    (monthSelected)="onMonthSelected($event)">
-  </app-date-picker>
   </div>
+
+    <div class="date-picker-container" *ngIf="!isAdmin && homepage">
+      <app-date-picker 
+      (dateRangeSelected)="onDateRangeSelected($event)"
+      (monthSelected)="onMonthSelected($event)">
+    </app-date-picker>
+    </div>
   
   <table mat-table [dataSource]="flights" matSort class="mat-elevation-z8">
 

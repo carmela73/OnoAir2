@@ -3,6 +3,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CommonModule } from '@angular/common';
 import { CalendarViewComponent } from '../calendar-view/calendar-view.component';
 import { MonthGridViewComponent } from '../month-grid-view/month-grid-view.component';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-date-picker',
@@ -16,7 +17,7 @@ export class DatePickerComponent {
   searchMode: 'specific' | 'flexible' = 'specific';
   selectedMonth: number | null = null; 
 
-  @Output() dateSelected = new EventEmitter<Date>();
+  @Output() dateRangeSelected = new EventEmitter<[Date | null, Date | null]>();
   @Output() monthSelected = new EventEmitter<number | null>();
   boardingMonth?: number;
 
@@ -27,8 +28,8 @@ export class DatePickerComponent {
     this.cdr.detectChanges(); 
   }
 
-  onDateSelected(date: Date) {
-    this.dateSelected.emit(date);
+  onDateRangeSelected(range: [Date | null, Date | null]) {
+    this.dateRangeSelected.emit(range);
   }
 
   onMonthSelected(selectedMonth: number | null) {

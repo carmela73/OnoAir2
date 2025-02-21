@@ -14,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BookingService } from '../../../bookings/service/booking.service';
 import { DatePickerComponent } from '../date-picker/date-picker.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { Timestamp } from '@angular/fire/firestore';
 
 
 @Component({
@@ -43,6 +44,9 @@ export class FlightsTableComponent implements OnInit {
   arrivalMonth?: number;
 
   searchMode: 'specific' | 'flexible' = 'specific';
+
+  departureDate: Date | null = null;
+  returnDate: Date | null = null;
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -109,25 +113,24 @@ export class FlightsTableComponent implements OnInit {
 
   isNoFlights: boolean = false;
 
-  async applyFilters() {
+  async applyMonthFilter() {
     let filteredFlights: Flight[];
-  
+
     if (this.boardingMonth === undefined || this.boardingMonth === null) {
-      filteredFlights = await this.flightService.listFutureFlights();
+        filteredFlights = await this.flightService.listFutureFlights();
     } else {
-      const startDate = new Date(2025, this.boardingMonth - 1, 1, 0, 0, 0);
-      const endDate = new Date(2025, this.boardingMonth, 0, 23, 59, 59);
-  
-      filteredFlights = await this.flightService.getFlightsByDateRange(startDate, endDate);
+        const now = new Date();
+        const startDate = new Date(2025, this.boardingMonth - 1, 1, 0, 0, 0);
+        const endDate = new Date(2025, this.boardingMonth, 0, 23, 59, 59);
+        filteredFlights = await this.flightService.getFlightsByDateRange(startDate, endDate);
+        filteredFlights = filteredFlights.filter(flight => {
+            const flightDateTime = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+            return flightDateTime > now && flight.status === 'Active';
+        });
     }  
-    filteredFlights = filteredFlights.filter(flight => {
-      const matchesOrigin = !this.selectedOrigin || flight.origin === this.selectedOrigin;
-      const matchesDestination = !this.selectedDestination || flight.destination === this.selectedDestination;
-      return matchesOrigin && matchesDestination;
-    });  
     this.flights = new MatTableDataSource(filteredFlights);
     this.isNoFlights = filteredFlights.length === 0;
-  }       
+}
 
   async toggleFlightStatus(flight: Flight) {
     if (flight.status === 'Active') {
@@ -155,12 +158,39 @@ export class FlightsTableComponent implements OnInit {
     } else {
       this.boardingMonth = selectedMonth;
     }
-    this.applyFilters();
-  }  
-  
-  onDateSelected(selectedDate: Date) {
-    this.boardingDate = selectedDate;
-    this.applyFilters();
-  }  
+    this.applyMonthFilter();
+  }   
+
+  async applyDateRangeFilter() {
+    if (!this.departureDate || !this.returnDate) {
+        return;
+    }
+    let filteredFlights = await this.flightService.getFlightsBySpecificDateRange(this.departureDate, this.returnDate);
+    filteredFlights = filteredFlights.filter(flight => {
+        const matchesOrigin = !this.selectedOrigin || flight.origin === this.selectedOrigin;
+        const matchesDestination = !this.selectedDestination || flight.destination === this.selectedDestination;
+        return matchesOrigin && matchesDestination;
+    });
+    this.flights = new MatTableDataSource(filteredFlights);
+    this.isNoFlights = filteredFlights.length === 0;
+  }
+
+onDateRangeSelected(range: [Date | null, Date | null]) {  
+  if (!range[0] || !range[1]) {
+      return;
+  }
+  this.departureDate = range[0];
+  this.returnDate = range[1];
+  this.applyDateRangeFilter();
+}
+
+  async filterByLocation() {
+    const filteredFlights = this.allFlights.filter(flight => 
+        (!this.selectedOrigin || flight.origin === this.selectedOrigin) &&
+        (!this.selectedDestination || flight.destination === this.selectedDestination)
+    );
+    this.flights.data = filteredFlights;
+    this.isNoFlights = filteredFlights.length === 0;
+  }
   
 }

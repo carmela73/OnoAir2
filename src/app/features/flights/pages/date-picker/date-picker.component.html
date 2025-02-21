@@ -1,15 +1,15 @@
 <div class="date-picker-container">
     <mat-button-toggle-group [(value)]="searchMode" aria-label="Search Mode">
-      <mat-button-toggle value="specific" (click)="setSearchMode('specific')">Specific Dates</mat-button-toggle>
-      <mat-button-toggle value="flexible" (click)="setSearchMode('flexible')">Flexible Dates</mat-button-toggle>
+      <mat-button-toggle value="flexible" (click)="setSearchMode('flexible')">Specific Dates</mat-button-toggle>
+      <mat-button-toggle value="specific" (click)="setSearchMode('specific')">Flexible Dates</mat-button-toggle>
     </mat-button-toggle-group>
   </div>
   
-  <div *ngIf="searchMode === 'specific'">
-    <app-calendar-view (dateSelected)="onDateSelected($event)"></app-calendar-view>
+  <div *ngIf="searchMode === 'flexible'">
+    <app-calendar-view (dateRangeSelected)="onDateRangeSelected($event)"></app-calendar-view>
   </div>
   
-  <div *ngIf="searchMode === 'flexible'">
+  <div *ngIf="searchMode === 'specific'">
     <app-month-grid-view (monthSelected)="onMonthSelected($event)"></app-month-grid-view>
   </div>
   
