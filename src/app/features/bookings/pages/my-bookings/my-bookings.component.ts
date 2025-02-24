@@ -9,17 +9,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { DestinationService } from '../../../destinations/service/destination.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CancelBookingDialogComponent } from '../cancel-booking-dialog/cancel-booking-dialog.component';
+import { Timestamp } from '@firebase/firestore';
 
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule,RouterModule, RouterLink, MatButtonModule, MatDialogModule ],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule ],
   templateUrl: './my-bookings.component.html',
   styleUrls: ['./my-bookings.component.css']
 })
 
 export class MyBookingsComponent implements OnInit {
   upcomingBookings: { booking: Booking; flight: Flight }[] = [];
+  completedBookings: { booking: Booking; flight: Flight }[] = [];
+  cancelledBookings: { booking: Booking; flight: Flight }[] = [];
   previousBookings: { booking: Booking; flight: Flight }[] = [];
   destinationImages: { [destination: string]: string } = {}; 
   now: Date = new Date();
@@ -28,27 +31,17 @@ export class MyBookingsComponent implements OnInit {
 
   async ngOnInit() {
 
-    this.now = new Date();
-
-    const allBookings = await this.bookingService.list();
-    // מביאים את כל פרטי הטיסות במקביל במקום בתוך לולאה
+  this.now = new Date();
+  await this.loadBookings();
+  const allBookings = await this.bookingService.list();
   const flights = await Promise.all(allBookings.map(b => this.flightService.get(b.flightNumber)));
-
-  this.upcomingBookings = [];
-  this.previousBookings = [];
 
   const destinationRequests = allBookings.map(async (booking: Booking, index: number) => {
     const flight = flights[index];
 
     // split bookings into upcoming and previous
       if (flight) {
-        if (new Date(flight.boardingDate) > this.now && booking.status === BookingStatus.Active){
-          this.upcomingBookings.push({ booking, flight });
-        } else {
-          this.previousBookings.push({ booking, flight });
-        }
-
-        // destination image
+      // destination image
       if (!this.destinationImages[flight.destination]) {
         const destination = await this.destinationService.getByName(flight.destination);
         this.destinationImages[flight.destination] = destination ? destination.imageUrl : 'assets/default-image.jpg';
@@ -69,7 +62,7 @@ export class MyBookingsComponent implements OnInit {
   }
 
   getDestinationImage(destination: string): string {
-    return this.destinationImages[destination] || 'assets/default-image.jpg';
+    return this.destinationImages[destination];
   }
   
 
@@ -87,19 +80,66 @@ export class MyBookingsComponent implements OnInit {
   }
   
   async cancelBooking(bookingId: string) {
-    const cancelledBooking = await this.bookingService.cancelBooking(bookingId);
-
-    if (!cancelledBooking) {
-        console.error(`Failed to cancel booking ${bookingId}`);
+    const booking = await this.bookingService.cancelBooking(bookingId);
+    if (!booking) {
         return;
     }
 
-    const index = this.upcomingBookings.findIndex(b => b.booking.bookingId === bookingId);
-    if (index !== -1) {
-        const cancelledItem = this.upcomingBookings.splice(index, 1)[0];
-        cancelledItem.booking.status = BookingStatus.Cancelled;
-        this.previousBookings.push(cancelledItem);
+    const flight = await this.flightService.get(booking.flightNumber);
+    if (!flight){
+      return;
     }
+
+    const flightDate = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+    const now = new Date();
+
+    this.upcomingBookings = this.upcomingBookings.filter(b => b.booking.bookingId !== bookingId);
+      this.completedBookings = this.completedBookings.filter(b => b.booking.bookingId !== bookingId);
+      this.cancelledBookings = this.cancelledBookings.filter(b => b.booking.bookingId !== bookingId);
+
+      if (flightDate > now) {
+          this.cancelledBookings.push({ booking, flight });
+      } 
+      else {
+          this.completedBookings.push({ booking, flight });
+      }
   }
+
+  async loadBookings() {
+    const allBookings = await this.bookingService.list();
+    const flights = await Promise.all(allBookings.map(b => this.flightService.get(b.flightNumber)));
+    const now = new Date();
+  
+    this.upcomingBookings = [];
+    this.completedBookings = [];
+    this.cancelledBookings = [];
+  
+    allBookings.forEach((booking, index) => {
+      const flight = flights[index];
+      if (flight) {
+        const flightDate = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+
+        if (flightDate < now && booking.status === BookingStatus.Active) {
+          this.completedBookings.push({ booking, flight });
+        } 
+        else if (booking.status === BookingStatus.Cancelled) {
+          this.cancelledBookings.push({ booking, flight });
+        } 
+        else if (flightDate > now && booking.status === BookingStatus.Active) {
+          this.upcomingBookings.push({ booking, flight });
+        }
+      }
+    });
+  }  
+  
+  getBookingsByType(type: string) {
+    if (type === 'Completed Flights') {
+      return this.completedBookings;
+    }
+    if (type === 'Cancelled Flights') {
+      return this.cancelledBookings;
+    }
+    return [];
+  }  
 
 }

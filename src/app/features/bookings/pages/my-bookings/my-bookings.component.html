@@ -33,8 +33,12 @@
   </div>
 
   <h2>Previous Bookings</h2>
-  <div *ngIf="hasPreviousBookings()">
-    <div *ngFor="let item of previousBookings" class="booking-item">
+
+  <div *ngFor="let type of ['Completed Flights', 'Cancelled Flights']">
+    <h3>{{ type }}</h3>
+    <div *ngIf="getBookingsByType(type).length === 0">No {{ type.toLowerCase() }}.</div>
+    <div *ngFor="let item of getBookingsByType(type)" class="booking-item">
+      
       <div class="image-container">
         <img [src]="getDestinationImage(item.flight.destination)" alt="Destination Image" class="destination-image">
       </div>
@@ -52,7 +56,6 @@
      </div>
     </div>
   </div>
-  <div *ngIf="!hasPreviousBookings()">
-    <p>No previous bookings available.</p>
-  </div>
 </div>
+
+
