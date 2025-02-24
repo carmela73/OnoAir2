@@ -37,16 +37,13 @@ export class FlightService {
       return;
     }
     const flightRef = doc(this.firestore, 'flights', flight.id).withConverter(flightConverter);
-
-    const boardingDate = typeof flight.boardingDate === 'string' ? new Date(flight.boardingDate) : flight.boardingDate;
-    const arrivalDate = typeof flight.arrivalDate === 'string' ? new Date(flight.arrivalDate) : flight.arrivalDate;  
-  
+    
     await updateDoc(flightRef, { 
       flightNumber: flight.flightNumber,
       origin: flight.origin,
       destination: flight.destination,
-      boardingDate: flight.boardingDate.toISOString(),
-      arrivalDate: flight.arrivalDate.toISOString(),
+      boardingDate: Timestamp.fromDate(flight.boardingDate),
+      arrivalDate: Timestamp.fromDate(flight.arrivalDate),
       numberOfSeats: flight.numberOfSeats,
       status: flight.status
     });
