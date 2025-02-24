@@ -1,4 +1,5 @@
 <div class="edit-flight-container">
+  <div *ngIf="flight">
   <h2 *ngIf="!flight.flightNumber">Add Flight</h2>
   <h2 *ngIf="flight.flightNumber">Editing Flight {{ flight.flightNumber }}</h2>
 
@@ -99,4 +100,5 @@
     </div>
 
   </form>
+</div>
 </div>

@@ -66,6 +66,7 @@ export class FlightsTableComponent implements OnInit {
   }
 
   async loadFlights() {
+    await this.flightService.updateAllPastFlights();
     const allFlights = await this.flightService.list();
     const futureFlights = await this.flightService.listFutureFlights();
   
@@ -129,6 +130,19 @@ export class FlightsTableComponent implements OnInit {
 }
 
   async toggleFlightStatus(flight: Flight) {
+    const now = new Date();
+    const flightDate = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+  
+    if (flightDate < now && flight.status === 'Cancelled') {
+      this.dialog.open(CancelFlightDialogComponent, {
+        data: { 
+          flightNumber: flight.flightNumber, 
+          errorMessage: `Cannot activate flight ${flight.flightNumber} because it has already occurred.` 
+        }
+      });
+      return;
+    }
+
     if (flight.status === 'Active') {
       await this.openCancelDialog(flight.flightNumber);
     } else {

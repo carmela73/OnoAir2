@@ -94,10 +94,35 @@ export class FlightService {
   
     const flightDoc = querySnapshot.docs[0];
     const flightId = flightDoc.id;
+    const flightData = flightDoc.data() as Flight;
+
+    const now = new Date();
+    const flightDate = flightData.boardingDate instanceof Timestamp ? flightData.boardingDate.toDate() : new Date(flightData.boardingDate);
+
+    if (flightData.status === 'Cancelled' && status === 'Cancelled') {
+      console.log(`Flight ${flightNumber} is already cancelled.`);
+      return;
+    }
+
+    if (flightDate < now && status === 'Active') {
+      throw new Error('Cannot activate a flight that has already occurred.');
+    }
   
     await updateDoc(doc(this.firestore, 'flights', flightId), { status });
-  
   } 
+
+  async updateAllPastFlights() {
+    const flights = await this.list(); 
+    const now = new Date();
+  
+    for (const flight of flights) {
+      const flightDate = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+  
+      if (flightDate < now && flight.status !== 'Cancelled') {
+        await this.updateFlightStatus(flight.flightNumber, 'Cancelled');
+      }
+    }
+  }
 
   async getFlightsByDateRange(startDate: Date, endDate: Date, flexible?: boolean): Promise<Flight[]> {
     const now = new Date();
