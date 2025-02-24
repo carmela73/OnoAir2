@@ -120,14 +120,9 @@ export class FlightsTableComponent implements OnInit {
     if (this.boardingMonth === undefined || this.boardingMonth === null) {
         filteredFlights = await this.flightService.listFutureFlights();
     } else {
-        const now = new Date();
         const startDate = new Date(2025, this.boardingMonth - 1, 1, 0, 0, 0);
         const endDate = new Date(2025, this.boardingMonth, 0, 23, 59, 59);
-        filteredFlights = await this.flightService.getFlightsByDateRange(startDate, endDate);
-        filteredFlights = filteredFlights.filter(flight => {
-            const flightDateTime = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
-            return flightDateTime > now && flight.status === 'Active';
-        });
+        filteredFlights = await this.flightService.getFlightsByDateRange(startDate, endDate, true);
     }  
     this.flights = new MatTableDataSource(filteredFlights);
     this.isNoFlights = filteredFlights.length === 0;
@@ -166,15 +161,7 @@ export class FlightsTableComponent implements OnInit {
     if (!this.departureDate || !this.returnDate) {
         return;
     }
-    let filteredFlights = await this.flightService.getFlightsBySpecificDateRange(this.departureDate, this.returnDate);
-    const now = new Date();
-    filteredFlights = filteredFlights.filter(flight => {
-      const flightDateTime = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
-      const matchesOrigin = !this.selectedOrigin || flight.origin === this.selectedOrigin;
-      const matchesDestination = !this.selectedDestination || flight.destination === this.selectedDestination;
-
-      return matchesOrigin && matchesDestination && flight.status === 'Active' && flightDateTime > now;
-  });
+    let filteredFlights = await this.flightService.getFlightsByDateRange(this.departureDate, this.returnDate, false);
     this.flights = new MatTableDataSource(filteredFlights);
     this.isNoFlights = filteredFlights.length === 0;
   }

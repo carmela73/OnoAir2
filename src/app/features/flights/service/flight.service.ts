@@ -101,41 +101,29 @@ export class FlightService {
     await updateDoc(doc(this.firestore, 'flights', flightId), { status });
   
   } 
-  
-  async getFlightsByDateRange(startDate: Date, endDate: Date): Promise<Flight[]> {  
-    const flightsSnapshot = await getDocs(
-        query(
-          collection(this.firestore, 'flights').withConverter(flightConverter),
-          where('boardingDate', '>', Timestamp.fromDate(startDate)), // 🔥 האם באמת מדלג על היום?
-          orderBy('boardingDate'), 
-          endAt(Timestamp.fromDate(endDate)) 
-        )
-    );
-    const flights = flightsSnapshot.docs.map(doc => doc.data()).filter(flight => flight.status === 'Active');
-    return flights;
-  }
 
-  async getFlightsBySpecificDateRange(startDate: Date, endDate: Date): Promise<Flight[]> {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-    const todayTimestamp = Timestamp.fromDate(today);
+  async getFlightsByDateRange(startDate: Date, endDate: Date, flexible?: boolean): Promise<Flight[]> {
+    const now = new Date();
+    now.setSeconds(0, 0); 
 
     const startTimestamp = Timestamp.fromDate(startDate);
     const adjustedEndDate = new Date(endDate);
     adjustedEndDate.setHours(23, 59, 59, 999);
     const endTimestamp = Timestamp.fromDate(adjustedEndDate);
-    const flightsSnapshot = await getDocs(
-        query(
-          collection(this.firestore, 'flights').withConverter(flightConverter),
-          where('boardingDate', '>', todayTimestamp),  
-          where('boardingDate', '>=', startTimestamp), 
-          where('boardingDate', '<=', endTimestamp),
-          orderBy('boardingDate')
-        )
-    );
+
+    let flightQuery = query(
+      collection(this.firestore, 'flights').withConverter(flightConverter),
+      orderBy('boardingDate'),
+      where('boardingDate', '>', startTimestamp),
+      where('boardingDate', '<=', endTimestamp)
+  );
+    const flightsSnapshot = await getDocs(flightQuery);
     const flights = flightsSnapshot.docs
         .map(doc => doc.data())
-        .filter(flight => flight.status === 'Active');
+        .filter(flight => {
+          const flightDateTime = flight.boardingDate instanceof Timestamp ? flight.boardingDate.toDate() : new Date(flight.boardingDate);
+          return flightDateTime > now && flight.status === 'Active';
+      });
     return flights;
   }
 
