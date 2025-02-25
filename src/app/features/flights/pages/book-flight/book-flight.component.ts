@@ -4,18 +4,21 @@ import { FlightService } from '../../service/flight.service';
 import { Flight } from '../../model/flight.model';
 import { CommonModule } from '@angular/common';
 import { BookingService } from '../../../bookings/service/booking.service';
-import { Booking, Passenger, BookingStatus } from '../../../bookings/model/booking.model';
+import { Booking, Passenger, BookingStatus, Luggage } from '../../../bookings/model/booking.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { LuggageDialogComponent } from '../../../bookings/pages/luggage-dialog/luggage-dialog.component';
+import { PassengerComponent } from '../../../bookings/pages/passenger/passenger.component';
+
 
 @Component({
   selector: 'app-book-flight',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, PassengerComponent ],
   templateUrl: './book-flight.component.html',
   styleUrls: ['./book-flight.component.css']
 })
@@ -36,6 +39,7 @@ export class BookFlightComponent implements OnInit {
     private flightService: FlightService,
     private bookingService: BookingService,
     private router: Router,
+    private dialog: MatDialog
   ) {}
   
   async ngOnInit() {
@@ -150,6 +154,22 @@ export class BookFlightComponent implements OnInit {
       seenPassports.add(passenger.passportNumber);
     }
       this.isFormInvalid = false;
+  }
+
+  openLuggageDialog(event: { bookingId: string, passportNumber: string, currentLuggage?: Luggage }): void {
+    const dialogRef = this.dialog.open(LuggageDialogComponent, {
+      width: '400px',
+      data: event
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const passenger = this.passengers.find(p => p.passportNumber === event.passportNumber);
+        if (passenger) {
+          passenger.luggage = result;
+        }
+      }
+    });
   }
   
 }
