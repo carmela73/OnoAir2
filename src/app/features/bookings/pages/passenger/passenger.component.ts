@@ -4,6 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { LuggageComponent } from '../luggage/luggage.component';
+import { MatDialog } from '@angular/material/dialog';
+import { LuggageDialogComponent } from '../luggage-dialog/luggage-dialog.component';
 
 @Component({
   selector: 'app-passenger',
@@ -16,13 +18,24 @@ import { LuggageComponent } from '../luggage/luggage.component';
 export class PassengerComponent {
   @Input() passenger!: Passenger;
   @Input() bookingId!: string;
-  @Output() manageLuggage = new EventEmitter<{ bookingId: string, passportNumber: string, currentLuggage?: Luggage }>();
+  @Output() manageLuggage = new EventEmitter<{ bookingId: string, passportNumber: string, luggage: Luggage }>();
+
+  constructor(private dialog: MatDialog) {}
 
   openLuggageDialog(): void {
-    this.manageLuggage.emit({ 
-      bookingId: this.bookingId, 
-      passportNumber: this.passenger.passportNumber, 
-      currentLuggage: this.passenger.luggage 
+    const dialogRef = this.dialog.open(LuggageDialogComponent, {
+      width: '400px',
+      data: { name: this.passenger.name, luggage: this.passenger.luggage || new Luggage() }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.manageLuggage.emit({ 
+          bookingId: this.bookingId, 
+          passportNumber: this.passenger.passportNumber, 
+          luggage: result
+        });
+      }
     });
   }
 

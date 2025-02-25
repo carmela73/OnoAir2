@@ -16,7 +16,7 @@ import { PassengerComponent } from '../passenger/passenger.component';
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule, PassengerComponent ],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule ],
   templateUrl: './my-bookings.component.html',
   styleUrls: ['./my-bookings.component.css']
 })
@@ -41,7 +41,6 @@ export class MyBookingsComponent implements OnInit {
   const destinationRequests = allBookings.map(async (booking: Booking, index: number) => {
     const flight = flights[index];
 
-    // split bookings into upcoming and previous
       if (flight) {
       // destination image
       if (!this.destinationImages[flight.destination]) {
@@ -54,7 +53,6 @@ export class MyBookingsComponent implements OnInit {
   await Promise.all(destinationRequests);
 }
         
-
   hasUpcomingBookings(): boolean {
     return this.upcomingBookings.length > 0;
   }
@@ -67,7 +65,6 @@ export class MyBookingsComponent implements OnInit {
     return this.destinationImages[destination];
   }
   
-
   openCancelDialog(bookingId: string) {
     const dialogRef = this.dialog.open(CancelBookingDialogComponent, {
       width: '350px',

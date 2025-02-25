@@ -1,1 +1,49 @@
-<p>luggage-dialog works!</p>
+<h2 mat-dialog-title>Add Luggage - {{ data.name }}</h2>
+
+<mat-dialog-content>
+  <mat-form-field class="luggage-field">
+    <mat-label>Number of Cabin Bags (max 8kg each)</mat-label>
+    <input matInput type="number" [(ngModel)]="luggage.cabin.length" min="0" max="9" (input)="updateLuggage('cabin', luggage.cabin.length)" />
+  </mat-form-field>
+
+  <mat-form-field class="luggage-field">
+    <mat-label>Number of Checked Bags (max 23kg each)</mat-label>
+    <input matInput type="number" [(ngModel)]="luggage.checked.length" min="0" max="9" (input)="updateLuggage('checked', luggage.checked.length)" />
+  </mat-form-field>
+
+  <mat-form-field class="luggage-field">
+    <mat-label>Number of Heavy Bags (max 32kg each)</mat-label>
+    <input matInput type="number" [(ngModel)]="luggage.heavy.length" min="0" max="9" (input)="updateLuggage('heavy', luggage.heavy.length)" />
+  </mat-form-field>
+
+  <div *ngIf="luggage.cabin.length > 0">
+    <h4>Cabin Bags</h4>
+    <mat-form-field class="luggage-field" *ngFor="let item of luggage.cabin; let i = index">
+      <mat-label>Weight for Cabin Bag {{ i + 1 }} (max 8kg)</mat-label>
+      <input matInput type="number" [(ngModel)]="luggage.cabin[i]" min="1" max="8" />
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="luggage.checked.length > 0">
+    <h4>Checked Bags</h4>
+    <mat-form-field class="luggage-field" *ngFor="let item of luggage.checked; let i = index">
+      <mat-label>Weight for Checked Bag {{ i + 1 }} (max 23kg)</mat-label>
+      <input matInput type="number" [(ngModel)]="luggage.checked[i]" min="1" max="23" />
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="luggage.heavy.length > 0">
+    <h4>Heavy Bags</h4>
+    <mat-form-field class="luggage-field" *ngFor="let item of luggage.heavy; let i = index">
+      <mat-label>Weight for Heavy Bag {{ i + 1 }} (max 32kg)</mat-label>
+      <input matInput type="number" [(ngModel)]="luggage.heavy[i]" min="1" max="32" />
+    </mat-form-field>
+  </div>
+
+  <mat-error *ngIf="totalItems > 9">🚨 Total items cannot exceed 9!</mat-error>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="warn" (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="totalItems > 9">Save Changes</button>
+</mat-dialog-actions>

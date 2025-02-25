@@ -11,12 +11,9 @@
         <p><strong>Destination:</strong> {{ item.flight.destination }} <strong>Landing:</strong> {{ item.flight.arrivalDate | date: 'dd/MM/yyyy HH:mm' }}</p>
         <p><strong>No. of passengers:</strong> {{ item.booking.numberOfPassengers }}</p>
         <div class="passenger-list">
-          <div *ngFor="let passenger of item.booking.passengers">
-            <app-passenger 
-            [passenger]="passenger" 
-            [bookingId]="item.booking.bookingId"
-            (manageLuggage)="openLuggageDialog($event)">
-          </app-passenger>
+          <div *ngFor="let passenger of item.booking.passengers; let i = index" class="passenger-row">
+            <span class="passenger-name"><strong>Passenger {{ i + 1 }}:</strong> {{ passenger.name }}</span>
+            <span class="passport-number"><strong>Passport:</strong> {{ passenger.passportNumber }}</span>
           </div>
         </div>  
         

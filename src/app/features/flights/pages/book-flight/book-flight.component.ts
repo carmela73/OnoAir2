@@ -10,15 +10,12 @@ import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog } from '@angular/material/dialog';
-import { LuggageDialogComponent } from '../../../bookings/pages/luggage-dialog/luggage-dialog.component';
-import { PassengerComponent } from '../../../bookings/pages/passenger/passenger.component';
 
 
 @Component({
   selector: 'app-book-flight',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, PassengerComponent ],
+  imports: [CommonModule, MatButtonModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './book-flight.component.html',
   styleUrls: ['./book-flight.component.css']
 })
@@ -39,7 +36,6 @@ export class BookFlightComponent implements OnInit {
     private flightService: FlightService,
     private bookingService: BookingService,
     private router: Router,
-    private dialog: MatDialog
   ) {}
   
   async ngOnInit() {
@@ -125,7 +121,7 @@ export class BookFlightComponent implements OnInit {
       this.showSuccessMessage = true;
       setTimeout(() => {
         this.showSuccessMessage = false;
-        this.router.navigate(['/my-bookings']);
+        this.router.navigate(['/passenger-list'], { state: { bookingId, passengers: this.passengers } });
       }, 3000);
   } 
   
@@ -156,20 +152,12 @@ export class BookFlightComponent implements OnInit {
       this.isFormInvalid = false;
   }
 
-  openLuggageDialog(event: { bookingId: string, passportNumber: string, currentLuggage?: Luggage }): void {
-    const dialogRef = this.dialog.open(LuggageDialogComponent, {
-      width: '400px',
-      data: event
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const passenger = this.passengers.find(p => p.passportNumber === event.passportNumber);
-        if (passenger) {
-          passenger.luggage = result;
-        }
-      }
-    });
+  openLuggageDialog(event: { bookingId: string, passportNumber: string, luggage: Luggage }): void {
+    const passenger = this.passengers.find(p => p.passportNumber === event.passportNumber);
+    if (passenger) {
+      passenger.luggage = event.luggage;
+    }
   }
+  
   
 }

@@ -1,0 +1,15 @@
+<mat-card class="passenger-list-container">
+<h2 class="title">Manage Luggage</h2>
+
+<div class="passenger-list">
+  <app-passenger
+    *ngFor="let passenger of passengers"
+    [passenger]="passenger"
+    [bookingId]="bookingId">
+  </app-passenger>
+</div>
+
+<div class="button-container">
+  <button mat-raised-button color="primary" (click)="saveLuggage()">Save Luggage</button>
+</div>
+</mat-card>
