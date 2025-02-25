@@ -1,0 +1,25 @@
+.passenger-card {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 8px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .passenger-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .passenger-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  button {
+    white-space: nowrap;
+  }
+  

@@ -1,0 +1,14 @@
+<mat-card class="passenger-card">
+    <mat-card-content>
+      <div class="passenger-header">
+        <div class="passenger-details">
+          <p><strong>Name:</strong> {{ passenger.name }}</p>
+          <p><strong>Passport:</strong> {{ passenger.passportNumber }}</p>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="openLuggageDialog()">Manage Luggage</button>
+      </div>
+
+      <app-luggage *ngIf="passenger.luggage" [luggage]="passenger.luggage"></app-luggage>
+    </mat-card-content>
+</mat-card>

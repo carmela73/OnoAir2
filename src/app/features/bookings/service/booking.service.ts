@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Booking, BookingStatus, Passenger } from '../model/booking.model';
+import { Booking, BookingStatus, Passenger, Luggage } from '../model/booking.model';
 import { Firestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { bookingConverter } from '../booking-converter';
 
@@ -99,5 +99,27 @@ export class BookingService {
     const bookings = await this.list();
     return bookings.some(booking => booking.flightNumber === flightNumber && booking.status === 'Active');
   }
+
+  async updatePassengerLuggage(bookingId: string, passportNumber: string, luggage: Luggage): Promise<void> {
+    const booking = await this.get(bookingId);
+    if (!booking) return;
+  
+    const passenger = booking.passengers.find(p => p.passportNumber === passportNumber);
+    if (!passenger) return;
+  
+    passenger.luggage = luggage;
+  
+    await this.updateBooking(booking);
+  }
+  
+  getTotalItems(luggage: Luggage): number {
+    return luggage.cabin + luggage.checked + luggage.heavy;
+  }
+  
+  getTotalWeight(luggage: Luggage): number {
+    return luggage.cabin + luggage.checked + luggage.heavy;
+  }
+  
+  
 
 }

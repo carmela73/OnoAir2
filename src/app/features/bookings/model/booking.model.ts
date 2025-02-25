@@ -20,11 +20,20 @@ export class Booking {
       return Math.random().toString(36).slice(2,6).toUpperCase(); 
     }
   }
+
+  export class Luggage {
+    constructor(
+      public cabin: number = 0,    
+      public checked: number = 0,  
+      public heavy: number = 0    
+    ) {}
+  } 
   
   export class Passenger {
     constructor(
       public name: string,            
-      public passportNumber: string  
+      public passportNumber: string,
+      public luggage?: Luggage 
     ) {}
   }
   

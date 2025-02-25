@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BookingService } from '../../service/booking.service';
 import { FlightService } from '../../../flights/service/flight.service';
-import { Booking, BookingStatus } from '../../model/booking.model';
+import { Booking, BookingStatus, Luggage } from '../../model/booking.model';
 import { Flight } from '../../../flights/model/flight.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
@@ -10,11 +10,13 @@ import { DestinationService } from '../../../destinations/service/destination.se
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CancelBookingDialogComponent } from '../cancel-booking-dialog/cancel-booking-dialog.component';
 import { Timestamp } from '@firebase/firestore';
+import { LuggageDialogComponent } from '../luggage-dialog/luggage-dialog.component';
+import { PassengerComponent } from '../passenger/passenger.component';
 
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule ],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule, PassengerComponent ],
   templateUrl: './my-bookings.component.html',
   styleUrls: ['./my-bookings.component.css']
 })
@@ -141,5 +143,23 @@ export class MyBookingsComponent implements OnInit {
     }
     return [];
   }  
+
+  openLuggageDialog(event: { bookingId: string, passportNumber: string, currentLuggage?: Luggage }): void {
+    const dialogRef = this.dialog.open(LuggageDialogComponent, {
+      width: '400px',
+      data: event
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const passenger = this.upcomingBookings
+          .find(b => b.booking.bookingId === event.bookingId)
+          ?.booking.passengers.find(p => p.passportNumber === event.passportNumber);
+        if (passenger) {
+          passenger.luggage = result;
+        }
+      }
+    });
+  }
 
 }
