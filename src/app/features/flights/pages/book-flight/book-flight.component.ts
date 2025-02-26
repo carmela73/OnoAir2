@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 
+
 @Component({
   selector: 'app-book-flight',
   standalone: true,
@@ -30,6 +31,7 @@ export class BookFlightComponent implements OnInit {
   numberOfPassengers : number | null = null;
   isFormInvalid: boolean = true;
   showSuccessMessage = false;
+  maxPassengers: number = 5;
 
   constructor(
     private route: ActivatedRoute,
@@ -65,9 +67,10 @@ export class BookFlightComponent implements OnInit {
       await this.validateBookingForm(); 
     });
   }  
-  
+
   updatePassengers() {
     let maxSeats = this.flight?.numberOfSeats || 1;
+    this.maxPassengers = Math.min(5, maxSeats);
     let count = Math.min(Number(this.numberOfPassengers), maxSeats); 
   
     if (!count || count < 1) {
@@ -77,6 +80,7 @@ export class BookFlightComponent implements OnInit {
     if (!this.passengers) {
       this.passengers = [];
     }
+
     while (this.passengers.length < count) {
       this.passengers.push(new Passenger('', ''));
     }
@@ -134,6 +138,10 @@ export class BookFlightComponent implements OnInit {
     if (!this.flight || !this.numberOfPassengers || this.numberOfPassengers < 1 || !this.passengers.length) {
       return;
     }
+
+    if (this.numberOfPassengers > 5) {
+      return;  // גורם לטופס להיות לא תקף
+  }
   
     const seenPassports = new Set();
   

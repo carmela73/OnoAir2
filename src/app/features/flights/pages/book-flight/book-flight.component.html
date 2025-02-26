@@ -15,10 +15,11 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Number of Passengers</mat-label>
-    <input matInput type="number" [(ngModel)]="numberOfPassengers" required (input)="updatePassengers()" min="1"  [max]="flight?.numberOfSeats ?? 1" #passengerInput="ngModel">
+    <input matInput type="number" [(ngModel)]="numberOfPassengers" required (input)="updatePassengers()" min="1" [max]="maxPassengers" #passengerInput="ngModel">
     <mat-error *ngIf="passengerInput?.errors?.['required']">Number of passenger is required</mat-error>
     <mat-error *ngIf="passengerInput?.errors?.['min']">At least 1 passenger is required</mat-error>
     <mat-error *ngIf="passengerInput.value > (flight?.numberOfSeats ?? 1)">Can't exceed available seats ({{ flight?.numberOfSeats ?? 1 }})</mat-error>
+    <mat-error *ngIf="numberOfPassengers !== null && numberOfPassengers > maxPassengers">Maximum 5 passengers allowed per booking</mat-error>
   </mat-form-field>
 
   <div *ngIf="numberOfPassengers && numberOfPassengers >= 1">

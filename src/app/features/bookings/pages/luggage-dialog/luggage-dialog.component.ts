@@ -28,6 +28,8 @@ export class LuggageDialogComponent {
     cabin: [], checked: [], heavy: []
   };
 
+  isWeightInvalid: boolean = false;
+
   constructor(
     public dialogRef: MatDialogRef<LuggageDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { name: string; luggage: Luggage }
@@ -92,8 +94,20 @@ export class LuggageDialogComponent {
       this.dialogRef.close(updatedLuggage);
     }
   }
-  
 
+  checkWeightValidity() {
+    this.isWeightInvalid = false;
+    if (this.luggage.cabin.some(weight => (weight ?? 0) < 0 || (weight ?? 0) > 8)) {
+      this.isWeightInvalid = true;
+    }
+    if (this.luggage.checked.some(weight => (weight ?? 0) < 0 || (weight ?? 0) > 23)) {
+      this.isWeightInvalid = true;
+    }
+    if (this.luggage.heavy.some(weight => (weight ?? 0) < 0)) {
+      this.isWeightInvalid = true;
+    }
+  }  
+  
   cancel(): void {
     this.dialogRef.close();
   }

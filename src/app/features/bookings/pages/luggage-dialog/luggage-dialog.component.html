@@ -24,6 +24,7 @@
   <mat-form-field class="luggage-field" *ngFor="let item of luggage.cabin; let i = index; trackBy: trackByIndex">
     <mat-label>Weight for Cabin Bag {{ i + 1 }} (max 8kg)</mat-label>
     <input matInput type="number" [(ngModel)]="luggage.cabin[i]" min="0" max="8"
+           (ngModelChange)="checkWeightValidity()"
            #weightInput="ngModel"
            placeholder="Enter weight" />
     
@@ -37,6 +38,7 @@
   <mat-form-field class="luggage-field" *ngFor="let item of luggage.checked; let i = index; trackBy: trackByIndex">
     <mat-label>Weight for Checked Bag {{ i + 1 }} (max 23kg)</mat-label>
     <input matInput type="number" [(ngModel)]="luggage.checked[i]" min="0" max="23"
+           (ngModelChange)="checkWeightValidity()"
            #weightInput="ngModel"
            placeholder="Enter weight" />
     
@@ -50,6 +52,7 @@
   <mat-form-field class="luggage-field" *ngFor="let item of luggage.heavy; let i = index; trackBy: trackByIndex">
     <mat-label>Weight for Heavy Bag {{ i + 1 }}</mat-label>
     <input matInput type="number" [(ngModel)]="luggage.heavy[i]" min="0"
+           (ngModelChange)="checkWeightValidity()"
            #weightInput="ngModel"
            placeholder="Enter weight" />
 
@@ -60,5 +63,5 @@
 
 <mat-dialog-actions align="end">
   <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="totalItems > 9" >Save Changes</button>
+  <button mat-raised-button color="primary" (click)="saveChanges()" [disabled]="totalItems > 9 || isWeightInvalid" >Save Changes</button>
 </mat-dialog-actions>

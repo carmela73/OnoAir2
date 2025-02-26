@@ -6,17 +6,20 @@ export const bookingConverter: FirestoreDataConverter<Booking> = {
     return {
       bookingId: booking.bookingId,
       flightNumber: booking.flightNumber,
-      passengers: booking.passengers.map(p => ({
-        name: p.name, 
-        passportNumber: p.passportNumber,
-        luggage: p.luggage
-        ? {
-            cabin: p.luggage.cabin ?? undefined,
-            checked: p.luggage.checked ?? undefined,
-            heavy: p.luggage.heavy ?? undefined
-          }
-        : undefined
-    })),
+      passengers: booking.passengers.map(p => {
+        const passengerData: any = {
+            name: p.name,
+            passportNumber: p.passportNumber
+        };
+        if (p.luggage) {
+            passengerData.luggage = {
+                cabin: p.luggage.cabin ?? null,
+                checked: p.luggage.checked ?? null,
+                heavy: p.luggage.heavy ?? null
+            };
+        }
+        return passengerData;
+    }), 
         status: booking.status
     };
   },
