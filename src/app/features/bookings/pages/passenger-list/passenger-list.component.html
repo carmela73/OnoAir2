@@ -5,7 +5,8 @@
   <app-passenger
     *ngFor="let passenger of passengers"
     [passenger]="passenger"
-    [bookingId]="bookingId">
+    [bookingId]="bookingId"
+    (manageLuggage)="updatePassengerLuggage($event)">
   </app-passenger>
 </div>
 

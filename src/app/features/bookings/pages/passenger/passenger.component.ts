@@ -27,7 +27,7 @@ export class PassengerComponent {
       width: '400px',
       data: { name: this.passenger.name, luggage: this.passenger.luggage || new Luggage() }
     });
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.manageLuggage.emit({ 
@@ -38,5 +38,5 @@ export class PassengerComponent {
       }
     });
   }
-
+   
 }

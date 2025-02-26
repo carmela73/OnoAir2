@@ -11,12 +11,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CancelBookingDialogComponent } from '../cancel-booking-dialog/cancel-booking-dialog.component';
 import { Timestamp } from '@firebase/firestore';
 import { LuggageDialogComponent } from '../luggage-dialog/luggage-dialog.component';
-import { PassengerComponent } from '../passenger/passenger.component';
+import { Passenger } from '../../model/booking.model';
+import { Router } from '@angular/router';
+import { LuggageComponent } from '../luggage/luggage.component';
 
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule ],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatDialogModule, RouterModule, LuggageComponent],
   templateUrl: './my-bookings.component.html',
   styleUrls: ['./my-bookings.component.css']
 })
@@ -29,8 +31,19 @@ export class MyBookingsComponent implements OnInit {
   destinationImages: { [destination: string]: string } = {}; 
   now: Date = new Date();
 
-  constructor(private bookingService: BookingService, private flightService: FlightService, private destinationService: DestinationService, private dialog: MatDialog ) {}
-
+  constructor(
+    private router: Router, 
+    private bookingService: BookingService, 
+    private flightService: FlightService, 
+    private destinationService: DestinationService, 
+    private dialog: MatDialog 
+  ) {
+    const state = this.router.getCurrentNavigation()?.extras.state as { bookingId: string, passengers: Passenger[] };
+    if (state) {
+      this.updateBookingPassengers(state.bookingId, state.passengers);
+    }
+  }
+  
   async ngOnInit() {
 
   this.now = new Date();
@@ -106,6 +119,7 @@ export class MyBookingsComponent implements OnInit {
 
   async loadBookings() {
     const allBookings = await this.bookingService.list();
+
     const flights = await Promise.all(allBookings.map(b => this.flightService.get(b.flightNumber)));
     const now = new Date();
   
@@ -159,4 +173,12 @@ export class MyBookingsComponent implements OnInit {
     });
   }
 
+  async updateBookingPassengers(bookingId: string, passengers: Passenger[]) {
+    const booking = await this.bookingService.get(bookingId);
+    if (booking) {
+      booking.passengers = passengers;
+      await this.bookingService.updateBooking(booking);
+    }
+  }
+  
 }

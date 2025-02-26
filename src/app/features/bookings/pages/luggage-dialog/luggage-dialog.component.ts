@@ -17,8 +17,16 @@ import { Luggage } from '../../model/booking.model';
 })
 
 export class LuggageDialogComponent {
-  luggage: { cabin: number[], checked: number[], heavy: number[] } = { cabin: [], checked: [], heavy: [] };
+  luggage: { cabin: (number | null)[], checked: (number | null)[], heavy: (number | null)[] } = { cabin: [], checked: [], heavy: [] };
   totalItems: number = 0;
+
+  cabinCount: number | null = null;
+  checkedCount: number | null = null;
+  heavyCount: number | null = null;
+  
+  invalidWeights: { cabin: boolean[], checked: boolean[], heavy: boolean[] } = {
+    cabin: [], checked: [], heavy: []
+  };
 
   constructor(
     public dialogRef: MatDialogRef<LuggageDialogComponent>,
@@ -28,26 +36,63 @@ export class LuggageDialogComponent {
   }
 
   initializeLuggage(): void {
-    this.luggage.cabin = new Array(this.data.luggage.cabin).fill(0);
-    this.luggage.checked = new Array(this.data.luggage.checked).fill(0);
-    this.luggage.heavy = new Array(this.data.luggage.heavy).fill(0);
+    this.cabinCount = this.data.luggage.cabin?.length ?? 0;
+    this.checkedCount = this.data.luggage.checked?.length ?? 0;
+    this.heavyCount = this.data.luggage.heavy?.length ?? 0;
+  
+    this.luggage.cabin = this.data.luggage.cabin ? [...this.data.luggage.cabin] : [];
+    this.luggage.checked = this.data.luggage.checked ? [...this.data.luggage.checked] : [];
+    this.luggage.heavy = this.data.luggage.heavy ? [...this.data.luggage.heavy] : [];
+
     this.validateTotalItems();
   }
 
   updateLuggage(type: 'cabin' | 'checked' | 'heavy', count: number): void {
-    this.luggage[type] = new Array(count).fill(0);
+    if (count === null || count < 0) return;
+    
+    while (this.luggage[type].length < count) {
+      this.luggage[type].push(null);  
+    }
+  
+    while (this.luggage[type].length > count) {
+      this.luggage[type].pop(); 
+    }
+  
     this.validateTotalItems();
   }
+  
+  updateLuggageWeight(type: 'cabin' | 'checked' | 'heavy', index: number): void {
+    if (this.luggage[type][index] !== null) {
+      this.luggage[type] = [...this.luggage[type]];
+    }
+  }
+
+  trackByIndex(index: number, item: any): number {
+    return index;
+  }
+
 
   validateTotalItems(): void {
-    this.totalItems = this.luggage.cabin.length + this.luggage.checked.length + this.luggage.heavy.length;
+    this.totalItems = (this.luggage.cabin?.length ?? 0) + (this.luggage.checked?.length ?? 0) + (this.luggage.heavy?.length ?? 0);
   }
 
   saveChanges(): void {
     if (this.totalItems <= 9) {
-      this.dialogRef.close(this.luggage);
+    const updatedLuggage = new Luggage(
+      this.luggage.cabin?.filter((w): w is number => w !== null && w !== undefined).length ? 
+        [...this.luggage.cabin.filter((w): w is number => w !== null && w !== undefined)] : undefined,
+        
+      this.luggage.checked?.filter((w): w is number => w !== null && w !== undefined).length ? 
+        [...this.luggage.checked.filter((w): w is number => w !== null && w !== undefined)] : undefined,
+        
+      this.luggage.heavy?.filter((w): w is number => w !== null && w !== undefined).length ? 
+        [...this.luggage.heavy.filter((w): w is number => w !== null && w !== undefined)] : undefined
+    );
+
+      this.dialogRef.close(updatedLuggage);
     }
   }
+  
 
   cancel(): void {
     this.dialogRef.close();

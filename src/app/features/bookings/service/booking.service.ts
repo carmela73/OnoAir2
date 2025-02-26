@@ -46,19 +46,24 @@ export class BookingService {
     }
   
     const bookingRef = doc(this.firestore, 'bookings', booking.id).withConverter(bookingConverter);
+    const docSnap = await getDoc(bookingRef);
+    if (!docSnap.exists()) {
+      return;
+    }
   
-
-      const docSnap = await getDoc(bookingRef);
-  
-      if (!docSnap.exists()) {
-        return;
-      }
-    
-      await updateDoc(bookingRef, {
-        flightNumber: booking.flightNumber,
-        passengers: booking.passengers.map(p => ({ name: p.name, passportNumber: p.passportNumber })),
+    await updateDoc(bookingRef, {
+      flightNumber: booking.flightNumber,
+      passengers: booking.passengers.map(p => ({
+        name: p.name, 
+        passportNumber: p.passportNumber,
+        luggage: p.luggage ? { 
+          cabin: Array.isArray(p.luggage.cabin) ? p.luggage.cabin.map(w => Number(w)) : [], 
+          checked: Array.isArray(p.luggage.checked) ? p.luggage.checked.map(w => Number(w)) : [], 
+          heavy: Array.isArray(p.luggage.heavy) ? p.luggage.heavy.map(w => Number(w)) : [] 
+        } : null
+      })),
         status: booking.status
-      });
+    });
   }  
   
   async isPassportNumberUsed(passportNumber: string, currentBookingId?: string): Promise<boolean> {
@@ -110,16 +115,6 @@ export class BookingService {
     passenger.luggage = luggage;
   
     await this.updateBooking(booking);
-  }
-  
-  getTotalItems(luggage: Luggage): number {
-    return luggage.cabin + luggage.checked + luggage.heavy;
-  }
-  
-  getTotalWeight(luggage: Luggage): number {
-    return luggage.cabin + luggage.checked + luggage.heavy;
-  }
-  
-  
+  } 
 
 }

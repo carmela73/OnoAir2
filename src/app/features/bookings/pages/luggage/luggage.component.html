@@ -1,1 +1,16 @@
-<p>luggage works!</p>
+<div class="luggage-container">
+    <p><strong>Total items:</strong> {{ getTotalItems() }}</p>
+    <p><strong>Total weight:</strong> {{ getTotalWeight() }}kg</p>
+
+    <div class="luggage-tags">
+      <span *ngFor="let weight of getSafeArray(luggage?.cabin)" class="luggage-tag cabin">
+        1x {{ weight }}kg
+      </span>
+      <span *ngFor="let weight of getSafeArray(luggage?.checked)" class="luggage-tag checked">
+        1x {{ weight }}kg
+      </span>
+      <span *ngFor="let weight of getSafeArray(luggage?.heavy)" class="luggage-tag heavy">
+        1x {{ weight }}kg
+      </span>
+    </div>
+</div>

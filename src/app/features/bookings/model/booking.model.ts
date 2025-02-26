@@ -23,9 +23,9 @@ export class Booking {
 
   export class Luggage {
     constructor(
-      public cabin: number = 0,    
-      public checked: number = 0,  
-      public heavy: number = 0    
+      public cabin?: number[],    
+      public checked?: number[],  
+      public heavy?: number[]    
     ) {}
   } 
   
