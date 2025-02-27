@@ -8,6 +8,7 @@ import { DestinationsComponent } from './features/destinations/pages/destination
 import { ViewDestinationComponent } from './features/destinations/pages/view-destination/view-destination.component';
 import { MyBookingsComponent } from './features/bookings/pages/my-bookings/my-bookings.component';
 import { PassengerListComponent } from './features/bookings/pages/passenger-list/passenger-list.component';
+import { ConfirmBookingComponent } from './features/bookings/pages/confirm-booking/confirm-booking.component';
 
 export const routes: Routes = [
     { path: '', component: HomePageComponent }, 
@@ -21,6 +22,7 @@ export const routes: Routes = [
     { path: 'my-bookings', component: MyBookingsComponent },
     { path: 'view-booking/:bookingId', component: BookFlightComponent},
     { path: 'passenger-list', component: PassengerListComponent },
+    {path: 'confirm-booking', component: ConfirmBookingComponent},
     { path: '**', redirectTo: '' }
 ];
 

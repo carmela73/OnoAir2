@@ -19,10 +19,22 @@ export class PassengerListComponent {
   passengers: Passenger[] = [];
   bookingId: string = '';
   constructor(private router: Router, private bookingService: BookingService) {
-    const state = this.router.getCurrentNavigation()?.extras.state as { bookingId: string, passengers: Passenger[] };
+    const state = this.router.getCurrentNavigation()?.extras.state as { bookingId: string, passengers?: Passenger[] };
     if (state) {
       this.bookingId = state.bookingId;
-      this.passengers = state.passengers;
+      if (state.passengers) {
+        this.passengers = state.passengers;
+      } else {
+        this.loadBookingData();
+      }
+    }
+  }
+
+  async loadBookingData() {
+    if (!this.bookingId) return;
+    const booking = await this.bookingService.get(this.bookingId);
+    if (booking) {
+      this.passengers = booking.passengers;
     }
   }
 
@@ -32,10 +44,8 @@ export class PassengerListComponent {
         await this.bookingService.updatePassengerLuggage(this.bookingId, passenger.passportNumber, passenger.luggage);
       }
     }
-  
-    console.log('Luggage saved! Reloading bookings...');
-    await this.bookingService.get(this.bookingId);
-    this.router.navigate(['/my-bookings']);  
+    const booking = await this.bookingService.get(this.bookingId);
+    this.router.navigate(['/confirm-booking'], { state: { booking } });  
   }
 
   updatePassengerLuggage(event: { bookingId: string, passportNumber: string, luggage: Luggage }) {

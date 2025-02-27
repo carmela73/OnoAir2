@@ -1,0 +1,29 @@
+<div class="confirm-booking-container">
+  <h2>Confirm Booking</h2>
+
+  <div *ngIf="booking; else noBooking">
+    <p><strong>Booking ID:</strong> {{ booking.bookingId }}</p>
+    <p><strong>Passengers:</strong></p>
+    
+    <div *ngFor="let passenger of booking.passengers" class="passenger-row">
+      <div class="passenger-info">
+        <span><strong>Name:</strong> {{ passenger.name }}</span>
+        <span><strong>Passport:</strong> {{ passenger.passportNumber }}</span>
+      </div>
+
+      <div class="luggage-wrapper" *ngIf="passenger.luggage">
+        <app-luggage [luggage]="passenger.luggage"></app-luggage>
+      </div>
+
+    </div>
+  </div>
+
+  <ng-template #noBooking>
+    <p>No booking details found.</p>
+  </ng-template>
+
+  <div class="button-container">
+    <button mat-raised-button color="primary" (click)="confirmBooking()">Confirm Booking</button>
+    <button mat-raised-button color="primary" (click)="cancelBooking()">Cancel</button>
+  </div>
+</div>
