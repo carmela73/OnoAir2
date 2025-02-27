@@ -12,10 +12,14 @@
         <p><strong>No. of passengers:</strong> {{ item.booking.numberOfPassengers }}</p>
         <div class="passenger-list">
           <div *ngFor="let passenger of item.booking.passengers; let i = index" class="passenger-row">
+            <div class="passenger-info">
             <span class="passenger-name"><strong>Passenger {{ i + 1 }}:</strong> {{ passenger.name }}</span>
             <span class="passport-number"><strong>Passport:</strong> {{ passenger.passportNumber }}</span>
-            <app-luggage *ngIf="passenger.luggage" [luggage]="passenger.luggage"></app-luggage>
           </div>
+          <div class="luggage-wrapper" *ngIf="passenger.luggage">
+            <app-luggage [luggage]="passenger.luggage"></app-luggage>
+          </div>
+           </div>
         </div>  
         
         <div class="button-container">
@@ -50,10 +54,14 @@
         <p><strong>No. of passengers:</strong> {{ item.booking.numberOfPassengers }}</p>
         <div class="passenger-list">
           <div *ngFor="let passenger of item.booking.passengers; let i = index" class="passenger-row">
+            <div class="passenger-info">
             <span class="passenger-name"><strong>Passenger {{ i + 1 }}:</strong> {{ passenger.name }}</span>
             <span class="passport-number"><strong>Passport:</strong> {{ passenger.passportNumber }}</span>
-            <app-luggage *ngIf="passenger.luggage" [luggage]="passenger.luggage"></app-luggage>
           </div>
+          <div class="luggage-wrapper" *ngIf="passenger.luggage">
+            <app-luggage [luggage]="passenger.luggage"></app-luggage>
+          </div>
+            </div>
         </div> 
      </div>
     </div>
