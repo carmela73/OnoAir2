@@ -23,7 +23,10 @@ export const routes: Routes = [
     { path: 'view-booking/:bookingId', component: BookFlightComponent},
     { path: 'passenger-list', component: PassengerListComponent },
     {path: 'confirm-booking', component: ConfirmBookingComponent},
+    { path: 'passenger-list/:flightNumber', component: PassengerListComponent },
+    { path: 'confirm-booking/:bookingId', component: ConfirmBookingComponent},
     { path: '**', redirectTo: '' }
+
 ];
 
 export const appRouterProviders = [
