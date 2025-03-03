@@ -10,13 +10,12 @@ import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-
+import { MatStepperModule } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-book-flight',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, FormsModule, MatFormFieldModule, MatInputModule, MatStepperModule],
   templateUrl: './book-flight.component.html',
   styleUrls: ['./book-flight.component.css']
 })
@@ -50,19 +49,14 @@ export class BookFlightComponent implements OnInit {
   
         if (bookingData) {
           this.booking = bookingData;
-          this.passengers = bookingData.passengers;
+          this.passengers = this.bookingService.getPassengers();
           this.flight = await this.flightService.get(this.booking.flightNumber) || null;
-          this.numberOfPassengers = this.booking.passengers.length;
+          this.numberOfPassengers = this.passengers.length;
         }
       } else if (this.flightNumber) {
-        const flightData = await this.flightService.get(this.flightNumber);
-  
-        if (flightData) {
-          this.flight = flightData;
-          this.passengers = [];
-          this.booking = null;
-          this.numberOfPassengers = null;
-        }
+          this.flight = (await this.flightService.get(this.flightNumber)) ?? null;
+          this.passengers =this.bookingService.getPassengers();;
+          this.numberOfPassengers = this.passengers.length || null;
       }
       await this.validateBookingForm(); 
     });
@@ -71,40 +65,36 @@ export class BookFlightComponent implements OnInit {
   updatePassengers() {
     let maxSeats = this.flight?.numberOfSeats || 1;
     this.maxPassengers = Math.min(5, maxSeats);
-    let count = Math.min(Number(this.numberOfPassengers), maxSeats); 
-  
+    let count = Math.min(Number(this.numberOfPassengers), maxSeats);   
     if (!count || count < 1) {
       this.passengers = [];
+      this.bookingService.setPassengers([]);
       return;
     }
-    if (!this.passengers) {
-      this.passengers = [];
-    }
-
     while (this.passengers.length < count) {
       this.passengers.push(new Passenger('', ''));
     }
     if (this.passengers.length > count) {
       this.passengers = this.passengers.slice(0, count);
     }
+    this.bookingService.setPassengers(this.passengers);
     this.validateBookingForm();
   }
   
   async saveBooking() {
     if (!this.flight || this.passengers.some(p => !p.name || !p.passportNumber)) return;
-
     if (this.isFormInvalid) {
       alert("Cannot save booking: Invalid input or duplicate passport detected.");
       return;
     }
-    
     for (const passenger of this.passengers) {
       if (await this.bookingService.isPassportNumberUsed(passenger.passportNumber, this.booking?.bookingId)) {
-        alert(`Passport number ${passenger.passportNumber} is already used in the system.`);
+        alert("Passport number ${passenger.passportNumber} is already used in the system.");
         return;
       }
     }
-
+    this.bookingService.setPassengers(this.passengers); 
+    this.bookingService.setSelectedFlight(this.flight.flightNumber);
     const bookingId = this.booking?.bookingId || Booking.generateBookingId();
     const id = this.booking?.id || bookingId;
 
@@ -125,7 +115,8 @@ export class BookFlightComponent implements OnInit {
       this.showSuccessMessage = true;
       setTimeout(() => {
         this.showSuccessMessage = false;
-        this.router.navigate(['/passenger-list'], { state: { bookingId, passengers: this.passengers } });
+        this.router.navigate([`/passenger-list/${this.flight?.flightNumber}`], {
+          state: { passengers: this.passengers }});
       }, 3000);
   } 
   
@@ -140,8 +131,8 @@ export class BookFlightComponent implements OnInit {
     }
 
     if (this.numberOfPassengers > 5) {
-      return;  // גורם לטופס להיות לא תקף
-  }
+      return; 
+    }
   
     const seenPassports = new Set();
   
@@ -166,6 +157,15 @@ export class BookFlightComponent implements OnInit {
       passenger.luggage = event.luggage;
     }
   }
-  
-  
+
+  navigateToStep(step: number) {
+    if (step === 0) {
+      this.router.navigate(['/book-flight']);
+    } else if (step === 1) {
+      this.router.navigate(['/passenger-list']);
+    } else if (step === 2) {
+      this.router.navigate(['/confirm-booking']);
+    }
+  }
+
 }

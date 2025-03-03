@@ -1,3 +1,7 @@
+<mat-stepper [linear]="true" [selectedIndex]="0" (selectionChange)="navigateToStep($event.selectedIndex)">
+  <mat-step label="passenger details" completed>
+    <ng-container *ngIf="true">
+
 <mat-card class="booking-card">
   <h2>{{ booking ? 'Edit Booking ' + booking.bookingId + '' : 'Book Flight' }}</h2>
 
@@ -47,3 +51,10 @@
   </button>
   </div>
 </mat-card>
+
+</ng-container>
+</mat-step>
+
+<mat-step label="add luggage" disabled></mat-step>
+<mat-step label="confirm booking" disabled></mat-step>
+</mat-stepper>
